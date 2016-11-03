@@ -46,7 +46,7 @@ class MockActor extends Actor {
       mocks = mocks + (m -> mock) 
       sender() ! mock  
     case GetMock(m) =>
-      sender() ! mocks(m)
+      sender() ! mocks.get(m)
   }
  
 }

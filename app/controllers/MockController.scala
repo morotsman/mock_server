@@ -26,35 +26,35 @@ class MockController @Inject() (actorSystem: ActorSystem)(implicit exec: Executi
         case MockSpec(c,_,body) if c == 200=> Ok(body)
         case MockSpec(c,_,body) if c == 201=> Created(body)
         case MockSpec(c,_,body) if c == 203=> Accepted(body)
-        case MockSpec(c,_,body) if c == 400=> BadRequest(body)
-        case MockSpec(c,_,body) if c == 409=> Conflict(body)
-        case MockSpec(c,_,body) if c == 413=> EntityTooLarge(body)
-        case MockSpec(c,_,body) if c == 417=> ExpectationFailed(body)
-        case MockSpec(c,_,body) if c == 403=> Forbidden(body)
+        case MockSpec(c,_,body) if c == 400=> BadRequest
+        case MockSpec(c,_,body) if c == 409=> Conflict
+        case MockSpec(c,_,body) if c == 413=> EntityTooLarge
+        case MockSpec(c,_,body) if c == 417=> ExpectationFailed
+        case MockSpec(c,_,body) if c == 403=> Forbidden
         case MockSpec(c,_,body) if c == 302=> Found(body)
-        case MockSpec(c,_,body) if c == 410=> Gone(body)
-        case MockSpec(c,_,body) if c == 500=> InternalServerError(body)
-        case MockSpec(c,_,body) if c == 405=> MethodNotAllowed(body)
+        case MockSpec(c,_,body) if c == 410=> Gone
+        case MockSpec(c,_,body) if c == 500=> InternalServerError
+        case MockSpec(c,_,body) if c == 405=> MethodNotAllowed
         case MockSpec(c,_,body) if c == 301=> MovedPermanently(body)
         
         case MockSpec(c,_,body) if c == 204=> NoContent
-        case MockSpec(c,_,body) if c == 203=> NonAuthoritativeInformation(body)
-        case MockSpec(c,_,body) if c == 406=> NotAcceptable(body)
-        case MockSpec(c,_,body) if c == 404=> NotFound(body)
-        case MockSpec(c,_,body) if c == 501=> NotImplemented(body)
+        case MockSpec(c,_,body) if c == 203=> NonAuthoritativeInformation
+        case MockSpec(c,_,body) if c == 406=> NotAcceptable
+        case MockSpec(c,_,body) if c == 404=> NotFound
+        case MockSpec(c,_,body) if c == 501=> NotImplemented
         case MockSpec(c,_,body) if c == 304=> NotModified
-        case MockSpec(c,_,body) if c == 206=> PartialContent(body)
-        case MockSpec(c,_,body) if c == 412=> PreconditionFailed(body)
-        case MockSpec(c,_,body) if c == 408=> RequestTimeout(body)
+        case MockSpec(c,_,body) if c == 206=> PartialContent
+        case MockSpec(c,_,body) if c == 412=> PreconditionFailed
+        case MockSpec(c,_,body) if c == 408=> RequestTimeout
         case MockSpec(c,_,body) if c == 205=> ResetContent
         case MockSpec(c,_,body) if c == 303=> SeeOther(body)
-        case MockSpec(c,_,body) if c == 503=> ServiceUnavailable(body)
+        case MockSpec(c,_,body) if c == 503=> ServiceUnavailable
         
         case MockSpec(c,_,body) if c == 307=> TemporaryRedirect(body)
-        case MockSpec(c,_,body) if c == 429=> TooManyRequests(body)
-        case MockSpec(c,_,body) if c == 401=> Unauthorized(body)
-        case MockSpec(c,_,body) if c == 415=> UnsupportedMediaType(body)
-        case MockSpec(c,_,body) if c == 414=> UriTooLong(body)
+        case MockSpec(c,_,body) if c == 429=> TooManyRequests
+        case MockSpec(c,_,body) if c == 401=> Unauthorized
+        case MockSpec(c,_,body) if c == 415=> UnsupportedMediaType
+        case MockSpec(c,_,body) if c == 414=> UriTooLong
         case _ => ??? 
       }
        
@@ -74,7 +74,10 @@ class MockController @Inject() (actorSystem: ActorSystem)(implicit exec: Executi
   }
   
   def getMock(method: String, name: String) = Action.async { request =>
-    (mockActor ? GetMock(MockResource(method,name))).mapTo[MockSpec].map { msg => Ok(Json.toJson(msg)) }
+    (mockActor ? GetMock(MockResource(method,name))).mapTo[Option[MockSpec]].map { 
+      case Some(msg) => Ok(Json.toJson(msg)) 
+      case None => NotFound
+    }
   } 
   
   def deleteMock(method: String, name: String) = Action.async { request =>
