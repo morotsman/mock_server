@@ -11,3 +11,17 @@ GET     /message                    controllers.AsyncController.message
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+
+GET     /mock-server/*name          controllers.MockController.mock(name)
+PUT     /mock-server/*name          controllers.MockController.mock(name)
+POST    /mock-server/*name          controllers.MockController.mock(name)
+DELETE  /mock-server/*name          controllers.MockController.mock(name)		
+
+
+GET		/mock						controllers.MockController.mockResources
+PUT     /mock/:method/*name					controllers.MockController.createMock(method,name)
+GET 	/mock/:method/*name                 controllers.MockController.getMock(method,name) 
+DELETE 	/mock/:method/*name                controllers.MockController.deleteMock(method,name) 
+
+		  

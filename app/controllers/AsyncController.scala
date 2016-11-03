@@ -29,7 +29,7 @@ class AsyncController @Inject() (actorSystem: ActorSystem)(implicit exec: Execut
    * a path of `/message`.
    */
   def message = Action.async {
-    getFutureMessage(10.second).map { msg => Ok(msg) }
+    getFutureMessage(1.second).map { msg => Ok(msg) }
   }
 
   private def getFutureMessage(delayTime: FiniteDuration): Future[String] = {
