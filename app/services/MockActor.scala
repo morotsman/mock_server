@@ -24,23 +24,14 @@ object MockActor {
 class MockActor extends Actor {
   import MockActor._
   
-  type Name = String
-  type Method = String
   
   var mocks : Map[MockResource,MockSpec] = Map()
-  var numberOfRequest: Int = 0;
   
   def receive = {
     case MockRequest(m) =>
-      val mySender = sender()
-      val mock = mocks.get(m).getOrElse(MockSpec(500, 0, "Could not find a specification for the mock."))
+      val mock = mocks.get(m).getOrElse(MockSpec(404, 0, "Could not find a specification for the mock."))
       val timeToWait = mock.responseTimeMillis
-      println(numberOfRequest)
-      numberOfRequest = numberOfRequest + 1
-      context.system.scheduler.scheduleOnce(timeToWait.millis) {
-        println("Timeout")
-        mySender ! mock
-      } 
+      context.system.scheduler.scheduleOnce(timeToWait.millis,sender, mock) 
     case ListMocks =>
       sender() ! mocks.keys
     case DeleteMock(m) =>
