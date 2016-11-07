@@ -1,4 +1,4 @@
-name := """mock-server"""
+name := """mock-service"""
 
 version := "1.0-SNAPSHOT"
 

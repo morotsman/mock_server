@@ -21,7 +21,6 @@ class MockController @Inject() (actorSystem: ActorSystem)(implicit exec: Executi
   implicit val timeout: Timeout = 240.seconds
 
   def mock(name: String) = Action.async { request =>
-    println("before")
     val result = (mockActor ? MockRequest(MockResource(request.method, name))).mapTo[MockSpec].map { spec => 
        spec match{
         case MockSpec(c,_,body) if c == 200=> Ok(body)
@@ -59,7 +58,6 @@ class MockController @Inject() (actorSystem: ActorSystem)(implicit exec: Executi
         case _ => ??? 
       }  
     }
-    println("after")
     result
   }
 
