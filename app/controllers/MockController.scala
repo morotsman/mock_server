@@ -9,6 +9,8 @@ import scala.concurrent.duration._
 import akka.pattern.ask
 import services.MockActor
 import services.MockActor._
+import services.StatisticsActor
+import services.StatisticsActor._
 import akka.util.Timeout
 import model.MockSpec
 import model.MockResource
@@ -18,10 +20,13 @@ import play.api.libs.json._
 class MockController @Inject() (actorSystem: ActorSystem)(implicit exec: ExecutionContext) extends Controller {
 
   val mockActor = actorSystem.actorOf(MockActor.props, "mock-actor")
+  val statisticsActor = actorSystem.actorOf(StatisticsActor.props, "statistics-actor")
   implicit val timeout: Timeout = 240.seconds
 
   def mock(name: String) = Action.async { request =>
-    val result = (mockActor ? MockRequest(MockResource(request.method, name))).mapTo[MockSpec].map { spec => 
+    val startTime = System.currentTimeMillis
+    val mockResource = MockResource(request.method, name)
+    val result = (mockActor ? MockRequest(mockResource)).mapTo[MockSpec].map { spec => 
        spec match{
         case MockSpec(c,_,body) if c == 200=> Ok(body)
         case MockSpec(c,_,body) if c == 201=> Created(body)
@@ -57,6 +62,10 @@ class MockController @Inject() (actorSystem: ActorSystem)(implicit exec: Executi
         case MockSpec(c,_,body) if c == 414=> UriTooLong
         case _ => ??? 
       }  
+    }
+    result.foreach { x =>  
+      val endTime = System.currentTimeMillis
+      statisticsActor ! CompletedRequest(mockResource,endTime-startTime)
     }
     result
   }

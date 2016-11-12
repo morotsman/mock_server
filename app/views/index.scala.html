@@ -1,20 +1,97 @@
-@*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(message: String)
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mock service</title>
+  <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.css")">
+  <script data-main="@routes.Assets.versioned("javascripts/main.js")" src="@routes.Assets.versioned("lib/requirejs/require.js")"></script>
+</head>
+<body ng-controller="mockCtrl">
 
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
-@main("Mock service") {
+<h2>Mock Service</h2>
 
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Scala")
+<!--  
+<form ng-submit="todoAdd()">
+    <input type="text" ng-model="todoInput" size="50" placeholder="Add New">
+    <input type="submit" value="Add New">
+</form>
 
-}
+-->
+
+<br>
+<div style="margin:80px">
+ 
+	<div style="margin:20px;border:1px solid;border-color:#ddd;border-radius: 4px 4px 0 0;" ng-repeat="mock in mockList">
+		<div style="margin:20px" ng-show="!mock.create" class="row">
+			<div class="col-md-12">
+				<h3><span ng-bind="mock.method"></span><span> </span><span ng-bind="mock.path"></span></h3>
+			</div>
+			
+			<div class="col-md-6">
+				<label for="responseCode">Response code</label>
+		    	<input type="text" ng-model="mock.responseCode" class="form-control" id="responseCode" placeholder="Response code">
+			</div>
+			<div class="col-md-6">
+		    	<label for="responseTimeInMillis">Response time</label>
+		    	<input type="text" ng-model="mock.responseTimeMillis" class="form-control" id="responseTimeInMillis" placeholder="Response time in millis">			
+			</div>	
+			<div class="col-md-12">
+		    	<label for="body">Body</label>
+		    	<textarea rows="5" ng-model="mock.body" class="form-control" id="body" placeholder="Body"></textarea>			
+			</div>	
+			<div style="margin-top:20px" class="col-md-1">
+				<p><button class="btn btn-success" ng-click="createMock($index)">Update mock</button></p>
+			</div>	
+			<div style="margin-top:20px" class="col-md-1">
+				<p><button class="btn btn-danger" ng-click="deleteMock($index)">Delete mock</button></p>	
+			</div>			
+			
+		</div>
+			 
+		<div style="margin:20px" class="row" ng-show="mock.create">
+			<div class="col-md-6">
+				<label for="method">Http Method</label>
+		    	<input type="text" ng-model="mock.method" class="form-control" id="method" placeholder="Http Method(GET,PUT,POST,DELETE)">
+			</div>
+			<div class="col-md-6">
+		    	<label for="path">Path</label>
+		    	<input type="text" ng-model=mock.path class="form-control" id="path" placeholder="Path to resource">			
+			</div>
+			<div class="col-md-6">
+				<label for="responseCode">Response code</label>
+		    	<input type="text" ng-model="mock.responseCode" class="form-control" id="responseCode" placeholder="Response code">
+			</div>
+			<div class="col-md-6">
+		    	<label for="responseTimeInMillis">Response time</label>
+		    	<input type="text" ng-model="mock.responseTimeMillis" class="form-control" id="responseTimeInMillis" placeholder="Response time in millis">			
+			</div>	
+			<div class="col-md-12">
+		    	<label for="body">Body</label>
+		    	<textarea rows="5" ng-model="mock.body" class="form-control" id="body" placeholder="Body"></textarea>			
+			</div>	
+			<div style="margin-top:20px" class="col-md-1">
+				<p><button class="btn btn-success" ng-click="createMock($index)">Create mock</button></p>
+	    		
+			</div>	
+			<div style="margin-top:20px" class="col-md-1">
+				<p><button class="btn btn-danger" ng-click="deleteMock($index)">Delete mock</button></p>	
+			</div>
+			
+			
+
+		</div>
+		
+
+		
+	</div>
+	
+	<p><button class="btn btn-primary" ng-click="newMock()">New mock</button></p>
+</div>
+
+
+
+
+</body>
+</html>
