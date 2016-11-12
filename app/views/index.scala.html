@@ -11,42 +11,62 @@
 <body ng-controller="mockCtrl">
 
 <h2>Mock Service</h2>
-
-<!--  
-<form ng-submit="todoAdd()">
-    <input type="text" ng-model="todoInput" size="50" placeholder="Add New">
-    <input type="submit" value="Add New">
-</form>
-
--->
+      
 
 <br>
 <div style="margin:80px">
+
+	<p><button class="btn btn-primary" ng-click="newMock()">New mock</button></p>
  
-	<div style="margin:20px;border:1px solid;border-color:#ddd;border-radius: 4px 4px 0 0;" ng-repeat="mock in mockList">
-		<div style="margin:20px" ng-show="!mock.create" class="row">
-			<div class="col-md-12">
-				<h3><span ng-bind="mock.method"></span><span> </span><span ng-bind="mock.path"></span></h3>
-			</div>
+	<div style="margin:20px;" ng-repeat="mock in mockList">
+		<div style="margin:20px;border:1px solid;border-color:#ddd;border-radius: 4px 4px 0 0;" ng-show="!mock.create" class="row flippable {{mock.currentSide}}">
+			<div style="margin:10px;height:300px" class="flippable_content front">
+				<div class="col-md-11">
+					<h3><span ng-bind="mock.method"></span><span> </span><span ng-bind="mock.path"></span></h3>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-info" ng-click="showInfo($index)">Info</button>
+				</div>
+				
+				
+				<div class="col-md-6">
+					<label for="responseCode">Response code</label>
+			    	<input type="text" ng-model="mock.responseCode" class="form-control" id="responseCode" placeholder="Response code">
+				</div>
+				<div class="col-md-6">
+			    	<label for="responseTimeInMillis">Response time</label>
+			    	<input type="text" ng-model="mock.responseTimeMillis" class="form-control" id="responseTimeInMillis" placeholder="Response time in millis">			
+				</div>	
+				<div class="col-md-12">
+			    	<label for="body">Body</label>
+			    	<textarea rows="5" ng-model="mock.body" class="form-control" id="body" placeholder="Body"></textarea>			
+				</div>	
+				<div style="margin-top:20px" class="col-md-1">
+					<p><button class="btn btn-success" ng-click="createMock($index)">Update mock</button></p>
+				</div>	
+				<div style="margin-top:20px" class="col-md-1">
+					<p><button class="btn btn-danger" ng-click="deleteMock($index)">Delete mock</button></p>	
+				</div>
 			
-			<div class="col-md-6">
-				<label for="responseCode">Response code</label>
-		    	<input type="text" ng-model="mock.responseCode" class="form-control" id="responseCode" placeholder="Response code">
 			</div>
-			<div class="col-md-6">
-		    	<label for="responseTimeInMillis">Response time</label>
-		    	<input type="text" ng-model="mock.responseTimeMillis" class="form-control" id="responseTimeInMillis" placeholder="Response time in millis">			
-			</div>	
-			<div class="col-md-12">
-		    	<label for="body">Body</label>
-		    	<textarea rows="5" ng-model="mock.body" class="form-control" id="body" placeholder="Body"></textarea>			
-			</div>	
-			<div style="margin-top:20px" class="col-md-1">
-				<p><button class="btn btn-success" ng-click="createMock($index)">Update mock</button></p>
-			</div>	
-			<div style="margin-top:20px" class="col-md-1">
-				<p><button class="btn btn-danger" ng-click="deleteMock($index)">Delete mock</button></p>	
-			</div>			
+			<div style="margin:10px;height:300px" class="flippable_content back">
+		
+				<div class="col-md-11">
+					<h3><span ng-bind="mock.method"></span><span> </span><span ng-bind="mock.path"></span></h3>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-info" ng-click="showInfo($index)">Info</button>
+				</div>
+				
+				
+				<div class="container">
+  					<div class="col-xs-6 col-xs-offset-3">
+    				<h4 class="text-center">Real-time</h4>
+    				<div id="chart1" class="big-chart"></div>
+  					</div>
+				</div>	
+		
+			</div>		
 			
 		</div>
 			 
@@ -87,7 +107,7 @@
 		
 	</div>
 	
-	<p><button class="btn btn-primary" ng-click="newMock()">New mock</button></p>
+	
 </div>
 
 

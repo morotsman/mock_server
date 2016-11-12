@@ -4,17 +4,27 @@
 
 requirejs.config({
   paths: {
-    'angular': ['../lib/angularjs/angular']
+    'angular': ['../lib/angularjs/angular'],
+    'jquery': ['../lib/jquery/jquery.min'],
+    'flot': ['../lib/flot/jquery.flot']
   },
   shim: {
-    'angular': {
-      exports : 'angular'
-    }
+	'angular': {
+		exports : 'angular',
+		
+    },
+    'jquery': {
+        exports : 'jquery',
+        deps: ['angular']
+     },
+     'flot': {
+         deps: ['jquery']
+     }
   }
 });
 
-require(['angular', './mock-controller'],
-  function(angular, controllers) {
+require(['angular','flot','./mock-controller'],
+  function(angular, flot,controllers) {
 
     // Declare app level module which depends on filters, and services
 

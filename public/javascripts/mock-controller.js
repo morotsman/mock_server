@@ -14,6 +14,7 @@ require([ 'angular', './mock-dao' ], function() {
 				$scope.createMock = createMock;
 				$scope.deleteMock = deleteMock;
 				$scope.mockList = [];
+				$scope.showInfo = showInfo;
 		
 				activate();
 				
@@ -32,7 +33,8 @@ require([ 'angular', './mock-dao' ], function() {
 									path: mocks.data[i].path,
 									body: mockDetails[i].data.body,
 									responseCode: mockDetails[i].data.responseCode,
-									responseTimeMillis: mockDetails[i].data.responseTimeMillis
+									responseTimeMillis: mockDetails[i].data.responseTimeMillis,
+									currentSide: "flippable_front"
 								})
 							}
 							$scope.mockList = result;
@@ -48,7 +50,8 @@ require([ 'angular', './mock-dao' ], function() {
 						path: "",
 						body: "",
 						responseCode: "",
-						responseTimeMillis: ""
+						responseTimeMillis: "",
+						currentSide: "flippable_front"
 					});
 				};
 				
@@ -63,8 +66,18 @@ require([ 'angular', './mock-dao' ], function() {
 					}
 					$scope.mockList.splice(index,1);
 				}
+
+				function showInfo(index) {
+					if($scope.mockList[index].currentSide === "flippable_front") {
+						$scope.mockList[index].currentSide = "flippable_back"
+					} else {
+						$scope.mockList[index].currentSide = "flippable_front"
+					}
+				}
+				
 				
 			} ]);
+
 
 	return controllers;
 
