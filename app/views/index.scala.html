@@ -10,13 +10,23 @@
 </head>
 <body ng-controller="mockCtrl">
 
-<h2>Mock Service</h2>
+
       
 
 <br>
-<div style="margin:80px">
+<div style="margin-left:80px;margin-right:80px">
 
-	<p><button class="btn btn-primary" ng-click="newMock()">New mock</button></p>
+	<div style="background-color: #fafafa;" class="row mock_container">
+		<div class="col-md-12 text-center">
+			<h1>Mock service</h1>
+		</div>	
+		<div class="col-md-12 text-center">
+			<p>A simple mock service for http requests. Create and configure a mock with just a few clicks and keystrokes...</p>
+		</div>	
+		<div style="margin-top:100px" class="col-md-12 text-center"> 
+			<p><button class="btn btn-primary btn-lg" ng-click="newMock()">New mock!</button></p>
+		</div>
+	</div>	
  
 	<div ng-repeat="mock in mockList">
 		<div ng-show="!mock.create" class="mock_container row flippable {{mock.currentSide}}">
@@ -25,7 +35,7 @@
 					<h3><span ng-bind="mock.method"></span><span> </span><span ng-bind="mock.path"></span></h3>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-info" ng-click="showInfo($index)">Info</button>
+					<button type="button" class="btn btn-info" ng-click="showInfo($index)" style="margin-top:20px">Info</button>
 				</div>
 				
 				
@@ -41,10 +51,10 @@
 			    	<label for="body">Body</label>
 			    	<textarea rows="5" ng-model="mock.body" class="form-control" id="body" placeholder="Body"></textarea>			
 				</div>	
-				<div style="margin-top:20px" class="col-md-1">
+				<div style="margin-top:20px" class="col-md-2">
 					<p><button class="btn btn-success" ng-click="createMock($index)">Update mock</button></p>
 				</div>	
-				<div style="margin-top:20px" class="col-md-1">
+				<div style="margin-top:20px" class="col-md-2">
 					<p><button class="btn btn-danger" ng-click="deleteMock($index)">Delete mock</button></p>	
 				</div>
 			
@@ -55,7 +65,7 @@
 					<h3><span ng-bind="mock.method"></span><span> </span><span ng-bind="mock.path"></span></h3>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-info" ng-click="showInfo($index)">Info</button>
+					<button type="button" class="btn btn-info" ng-click="showInfo($index)" style="margin-top:20px">Info</button>
 				</div>
 				
 				
@@ -91,22 +101,16 @@
 		    	<label for="body">Body</label>
 		    	<textarea rows="5" ng-model="mock.body" class="form-control" id="body" placeholder="Body"></textarea>			
 			</div>	
-			<div style="margin-top:20px" class="col-md-1">
+			<div style="margin-top:20px" class="col-md-2">
 				<p><button class="btn btn-success" ng-click="createMock($index)">Create mock</button></p>
 	    		
 			</div>	
-			<div style="margin-top:20px" class="col-md-1">
+			<div style="margin-top:20px" class="col-md-2">
 				<p><button class="btn btn-danger" ng-click="deleteMock($index)">Delete mock</button></p>	
 			</div>
-			
-			
-
-		</div>
-		
-
-		
+		</div>	
 	</div>
-	
+
 	
 </div>
 
