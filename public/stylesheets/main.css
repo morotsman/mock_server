@@ -1,13 +1,13 @@
-.demo_div {
-    border:2px solid;
-    border-radius:25px;
-    width:100px;
-    height:100px;
-    text-align:center;
-    line-height:100px;    
+.mock_container {
+	
+	border:1px solid;
+	border-color:#ddd;
+	border-radius: 4px 4px 0 0;
+	margin-bottom:20px
 }
 
 .flippable {
+	
   position: relative;
   z-index: 1;
   transform-style: preserve-3d;

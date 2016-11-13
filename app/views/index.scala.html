@@ -18,9 +18,9 @@
 
 	<p><button class="btn btn-primary" ng-click="newMock()">New mock</button></p>
  
-	<div style="margin:20px;" ng-repeat="mock in mockList">
-		<div style="margin:20px;border:1px solid;border-color:#ddd;border-radius: 4px 4px 0 0;" ng-show="!mock.create" class="row flippable {{mock.currentSide}}">
-			<div style="margin:10px;height:300px" class="flippable_content front">
+	<div ng-repeat="mock in mockList">
+		<div ng-show="!mock.create" class="mock_container row flippable {{mock.currentSide}}">
+			<div style="background-color: #fafafa;" class="flippable_content front">
 				<div class="col-md-11">
 					<h3><span ng-bind="mock.method"></span><span> </span><span ng-bind="mock.path"></span></h3>
 				</div>
@@ -49,7 +49,7 @@
 				</div>
 			
 			</div>
-			<div style="margin:10px;height:300px" class="flippable_content back">
+			<div style="background-color: #fafafa;" class="flippable_content back">
 		
 				<div class="col-md-11">
 					<h3><span ng-bind="mock.method"></span><span> </span><span ng-bind="mock.path"></span></h3>
@@ -70,7 +70,7 @@
 			
 		</div>
 			 
-		<div style="margin:20px" class="row" ng-show="mock.create">
+		<div style="background-color: #fafafa;" class="row mock_container" ng-show="mock.create">
 			<div class="col-md-6">
 				<label for="method">Http Method</label>
 		    	<input type="text" ng-model="mock.method" class="form-control" id="method" placeholder="Http Method(GET,PUT,POST,DELETE)">
