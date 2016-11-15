@@ -20,7 +20,16 @@ require([ 'angular', './mock-dao' ], function() {
 				
 				function activate() {
 					listMocks();
+					statistics();
 				}
+				
+				function statistics() {
+					var socket = new WebSocket("ws://localhost:9000/ws");
+					socket.onmessage = function(msg){
+						console.log(msg);
+					}
+				}
+				
 		
 				function listMocks (){
 					mockDao.getMocks().then(function(mocks) {

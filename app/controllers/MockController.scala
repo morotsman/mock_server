@@ -1,6 +1,7 @@
 package controllers
 
 import akka.actor.ActorSystem
+import akka.actor.ActorRef
 import javax.inject._
 import play.api._
 import play.api.mvc._
@@ -17,10 +18,10 @@ import model.MockResource
 import play.api.libs.json._
 
 @Singleton
-class MockController @Inject() (actorSystem: ActorSystem)(implicit exec: ExecutionContext) extends Controller {
+class MockController @Inject() (@Named("statisticsActor") statisticsActor: ActorRef, 
+    @Named("mockActor") mockActor: ActorRef,
+    actorSystem: ActorSystem)(implicit exec: ExecutionContext) extends Controller {
 
-  val mockActor = actorSystem.actorOf(MockActor.props, "mock-actor")
-  val statisticsActor = actorSystem.actorOf(StatisticsActor.props, "statistics-actor")
   implicit val timeout: Timeout = 240.seconds
 
   def mock(name: String) = Action.async { request =>

@@ -12,8 +12,8 @@
   z-index: 1;
   transform-style: preserve-3d;
   -webkit-transform-style:preserve-3d; 
-  transition: all 1.0s linear;
-  -webkit-transition: all 1.0s linear;
+  transition: all 0.5s linear;
+  -webkit-transition: all 0.5s linear;
 }
 
 .flippable_front {}

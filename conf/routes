@@ -20,4 +20,6 @@ PUT     /mock/:method/*name					controllers.MockController.createMock(method,nam
 GET 	/mock/:method/*name                 controllers.MockController.getMock(method,name) 
 DELETE 	/mock/:method/*name                controllers.MockController.deleteMock(method,name) 
 
+GET     /ws                         controllers.StatisticsController.ws
+
 		  
