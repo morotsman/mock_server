@@ -9,6 +9,8 @@ require([ 'angular', './mock-dao' ], function() {
 
 	controllers.controller('mockCtrl', [ '$scope', 'mockDao','$q',
 			function($scope, mockDao, $q) {
+				var websocket = new WebSocket("ws://localhost:9000/ws");
+				websocket.onmessage = updateStatistics
 
 				$scope.newMock = newMock; 
 				$scope.createMock = createMock;
@@ -20,17 +22,8 @@ require([ 'angular', './mock-dao' ], function() {
 				
 				function activate() {
 					listMocks();
-					statistics();
 				}
-				
-				function statistics() {
-					var socket = new WebSocket("ws://localhost:9000/ws");
-					socket.onmessage = function(msg){
-						console.log(msg);
-					}
-				}
-				
-		
+ 
 				function listMocks (){
 					mockDao.getMocks().then(function(mocks) {
 						mockDao.getMockDetails(mocks.data).then(function(mockDetails){
@@ -76,11 +69,54 @@ require([ 'angular', './mock-dao' ], function() {
 					$scope.mockList.splice(index,1);
 				}
 
+				function getChartOptions (data) {
+					return {
+						series: {shadowSize: 0},
+						  xaxis: {
+							  show: false
+						  }				    
+					}
+				}		
+				
+				function updateStatistics(msg) {
+					var data = JSON.parse(msg.data);
+					var method = data.resource.method;
+					var path = data.resource.path;
+					var numberOfOutgoingRequests = data.numberOfRequestsPerSecond;
+					var plot = $("#" + method + path).data("plot")
+					var data = plot.getData()[0].data;
+					if(data.length > 1000) {
+						data.shift();
+					}
+					data.push([data.length, numberOfOutgoingRequests]);
+					
+					plot.setData([data])
+					plot.setupGrid()
+					plot.draw()
+				}
+				
+				
+				function watchStatistics(mock) {
+					websocket.send(JSON.stringify({action:"watch", resource: {method: mock.method, path: mock.path}}));
+					var dataset = [
+					               { label: "Outgoing requests", data: [], points: { symbol: "triangle"} }
+					           ];
+					var chartOptions = getChartOptions(data1);
+					$('#' + mock.method + mock.path).plot(dataset, chartOptions).data("plot");
+				}
+				
+				function unWatchStatistics(mock) {
+					websocket.send(JSON.stringify({action:"unWatch", resource: {method: mock.method, path: mock.path}}));
+				}
+
 				function showInfo(index) {
-					if($scope.mockList[index].currentSide === "flippable_front") {
-						$scope.mockList[index].currentSide = "flippable_back"
+					var mock = $scope.mockList[index]; 
+					if(mock.currentSide === "flippable_front") {
+						mock.currentSide = "flippable_back";
+						watchStatistics(mock);
 					} else {
-						$scope.mockList[index].currentSide = "flippable_front"
+						mock.currentSide = "flippable_front";
+						unWatchStatistics(mock);
 					}
 				}
 				

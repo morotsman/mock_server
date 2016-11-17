@@ -11,6 +11,8 @@ import play.api.libs.json._
 import services.StatisticsActor.WatchStatistics
 import services.StatisticsActor.StatisticsEvent
 
+import model.MockResource
+
 class UserActor @Inject()(@Assisted out: ActorRef,
                           @Named("statisticsActor") statisticsActor: ActorRef,
                           configuration: Configuration) extends Actor with ActorLogging {
@@ -22,17 +24,25 @@ class UserActor @Inject()(@Assisted out: ActorRef,
     statisticsActor ! WatchStatistics
   }
 
+  var observedMocks : Set[MockResource]= Set() 
 
 
   override def receive: Receive = LoggingReceive {
 
     case json: JsValue =>
-      //val symbol = (json \ "symbol").as[String]
-      //statisticsActor ! WatchStock(symbol)
-      
+      val action = (json \ "action").as[String]
+      val resource = (json \ "resource").as[MockResource]
+      if(action == "watch") {
+        observedMocks = observedMocks + resource
+      } else if(action == "unWatch"){
+        observedMocks = observedMocks - resource
+      }      
     case StatisticsEvent(resource,numberOfRequests) =>
-      val statisticsEvent = Json.obj("type" -> "statisticsEvent", "resource" -> resource, "numberOfRequestsPerSecond" -> numberOfRequests)
-      out ! statisticsEvent
+      if(observedMocks.contains(resource)) {
+         val statisticsEvent = Json.obj("type" -> "statisticsEvent", "resource" -> resource, "numberOfRequestsPerSecond" -> numberOfRequests)
+         out ! statisticsEvent
+      }
+     
     case unknown@_ => 
       println("Unknown message received by UserActor: " + unknown)
   }
