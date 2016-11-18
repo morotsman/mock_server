@@ -46,6 +46,7 @@ require([ 'angular', './mock-dao' ], function() {
 				
 				
 				function newMock(){
+					$scope.mockUnderConstruction= true;
 					$scope.mockList.push({
 						create: true,
 						method: "",
@@ -57,8 +58,12 @@ require([ 'angular', './mock-dao' ], function() {
 					});
 				};
 				
+				function addMock() {
+					$scope.mockUnderConstruction = false;
+				}
+				
 				function createMock(index) {
-					mockDao.updateMock($scope.mockList[index]).then(listMocks);
+					mockDao.updateMock($scope.mockList[index]).then(listMocks).then(addMock);
 				}
 				
 				function deleteMock(index) {
@@ -77,6 +82,8 @@ require([ 'angular', './mock-dao' ], function() {
 						  }				    
 					}
 				}	
+				
+
 				
 				function updatePlot(method, path, numberOfRequests, eventType) {
 					var plot = $("#" + eventType + method + path).data("plot")
@@ -104,12 +111,15 @@ require([ 'angular', './mock-dao' ], function() {
 				
 				function watchStatistics(mock) {
 					websocket.send(JSON.stringify({action:"watch", resource: {method: mock.method, path: mock.path}}));
-					var dataset = [
+					var incomingDataset = [
 					               { label: "Outgoing requests", data: [], points: { symbol: "triangle"} }
 					           ];
+					var completedDataset = [
+							               { label: "Outgoing requests", data: [], points: { symbol: "triangle"} }
+							           ];
 					var chartOptions = getChartOptions();
-					$('#completed' + mock.method + mock.path).plot(dataset, chartOptions).data("plot");
-					$('#incoming' + mock.method + mock.path).plot(dataset, chartOptions).data("plot")
+					$('#completed' + mock.method + mock.path).plot(completedDataset, chartOptions).data("plot");
+					$('#incoming' + mock.method + mock.path).plot(incomingDataset, chartOptions).data("plot")
 				}
 				
 				function unWatchStatistics(mock) {
