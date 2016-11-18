@@ -69,7 +69,7 @@ require([ 'angular', './mock-dao' ], function() {
 					$scope.mockList.splice(index,1);
 				}
 
-				function getChartOptions (data) {
+				function getChartOptions () {
 					return {
 						series: {shadowSize: 0},
 						  xaxis: {
@@ -101,7 +101,7 @@ require([ 'angular', './mock-dao' ], function() {
 					var dataset = [
 					               { label: "Outgoing requests", data: [], points: { symbol: "triangle"} }
 					           ];
-					var chartOptions = getChartOptions(data1);
+					var chartOptions = getChartOptions();
 					$('#' + mock.method + mock.path).plot(dataset, chartOptions).data("plot");
 				}
 				

@@ -18,6 +18,9 @@ object StatisticsActor {
   case class WatchStatistics()
   case class UnWatchStatistics()
   
+  case class MockCreated(mockResource: MockResource)
+  case class MockDeleted(mockResource: MockResource)
+  
   case class StatisticsEvent(mockResource: MockResource, numberOfRequests: Int)
 }
 
@@ -36,26 +39,31 @@ class StatisticsActor extends Actor {
     case CompletedRequest(mockResource,timeInMillis) => 
       if(receivedRequestsLastSecond.contains(mockResource)){
         receivedRequestsLastSecond(mockResource) = receivedRequestsLastSecond(mockResource) + 1
-      } else {
-        receivedRequestsLastSecond = receivedRequestsLastSecond + (mockResource -> 1)
-      }
+      } 
+    
     case AgggregateStatistcs =>
       context.system.scheduler.scheduleOnce(1000.millis,self, AgggregateStatistcs)
-      observers.foreach { out => 
-        
+      observers.foreach { out =>   
         receivedRequestsLastSecond.foreach(s =>
             out ! StatisticsEvent(s._1, s._2) 
-        )
-        
-        
+        )  
       }
-      receivedRequestsLastSecond = scala.collection.mutable.Map()
+      receivedRequestsLastSecond = receivedRequestsLastSecond.map( v => (v._1 -> 0))
+    
     case WatchStatistics =>
       println("New observer!!!") 
       observers = observers + sender()
+    
     case UnWatchStatistics => 
       println("Remove observer!!!")
       observers = observers - sender
+    
+    case MockCreated(mockResource) =>
+      receivedRequestsLastSecond = receivedRequestsLastSecond + (mockResource -> 0)
+      
+    case MockDeleted(mockResource) =>
+      receivedRequestsLastSecond = receivedRequestsLastSecond - mockResource
+      
     case test@_ =>
       println("Unknown message (StatisticsActor): " + test);
   } 

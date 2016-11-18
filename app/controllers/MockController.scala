@@ -76,10 +76,12 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
   }
 
   def createMock(method: String, name: String) = Action.async(BodyParsers.parse.json) { request =>
-    request.body.validate[MockSpec].map {
-      mock => (mockActor ? AddMock(MockResource(method,name),mock)).mapTo[MockSpec].map { msg => Ok(Json.toJson(msg)) }
+    request.body.validate[MockSpec].map { mock => 
+      val mockResource = MockResource(method,name)
+      statisticsActor ! MockCreated(mockResource)
+      (mockActor ? AddMock(mockResource,mock)).mapTo[MockSpec].map { msg => Ok(Json.toJson(msg)) }
     }.recoverTotal {
-      errors => Future.successful(BadRequest("Bad request: " + JsError.toFlatJson(errors)))
+      errors => Future.successful(BadRequest("Bad request: " + JsError.toJson(errors)))
     }
   }
   
@@ -91,7 +93,9 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
   } 
   
   def deleteMock(method: String, name: String) = Action.async { request =>
-    (mockActor ? DeleteMock(MockResource(method,name))).map { msg => Ok }
+    val mockResource = MockResource(method,name)
+    statisticsActor ! DeleteMock(mockResource)
+    (mockActor ? DeleteMock(mockResource)).map { msg => Ok }
   } 
   
 
