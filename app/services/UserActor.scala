@@ -37,9 +37,9 @@ class UserActor @Inject()(@Assisted out: ActorRef,
       } else if(action == "unWatch"){
         observedMocks = observedMocks - resource
       }      
-    case StatisticsEvent(resource,numberOfRequests) =>
+    case StatisticsEvent(resource,numberOfRequests, eventType) =>
       if(observedMocks.contains(resource)) {
-         val statisticsEvent = Json.obj("type" -> "statisticsEvent", "resource" -> resource, "numberOfRequestsPerSecond" -> numberOfRequests)
+         val statisticsEvent = Json.obj("type" -> "statisticsEvent", "resource" -> resource, "numberOfRequestsPerSecond" -> numberOfRequests, "eventType" -> eventType)
          out ! statisticsEvent
       }
      

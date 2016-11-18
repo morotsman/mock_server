@@ -76,23 +76,29 @@ require([ 'angular', './mock-dao' ], function() {
 							  show: false
 						  }				    
 					}
-				}		
+				}	
+				
+				function updatePlot(method, path, numberOfRequests, eventType) {
+					var plot = $("#" + eventType + method + path).data("plot")
+					var data = plot.getData()[0].data;
+					if(data.length > 1000) {
+						data.shift();
+					}
+					data.push([data.length, numberOfRequests]);
+					
+					plot.setData([data])
+					plot.setupGrid()
+					plot.draw()
+				}
 				
 				function updateStatistics(msg) {
 					var data = JSON.parse(msg.data);
 					var method = data.resource.method;
 					var path = data.resource.path;
-					var numberOfOutgoingRequests = data.numberOfRequestsPerSecond;
-					var plot = $("#" + method + path).data("plot")
-					var data = plot.getData()[0].data;
-					if(data.length > 1000) {
-						data.shift();
-					}
-					data.push([data.length, numberOfOutgoingRequests]);
+					var eventType = data.eventType
+					var numberOfRequests = data.numberOfRequestsPerSecond;
 					
-					plot.setData([data])
-					plot.setupGrid()
-					plot.draw()
+					updatePlot(method, path, numberOfRequests,eventType);
 				}
 				
 				
@@ -102,7 +108,8 @@ require([ 'angular', './mock-dao' ], function() {
 					               { label: "Outgoing requests", data: [], points: { symbol: "triangle"} }
 					           ];
 					var chartOptions = getChartOptions();
-					$('#' + mock.method + mock.path).plot(dataset, chartOptions).data("plot");
+					$('#completed' + mock.method + mock.path).plot(dataset, chartOptions).data("plot");
+					$('#incoming' + mock.method + mock.path).plot(dataset, chartOptions).data("plot")
 				}
 				
 				function unWatchStatistics(mock) {

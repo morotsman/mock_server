@@ -27,6 +27,7 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
   def mock(name: String) = Action.async { request =>
     val startTime = System.currentTimeMillis
     val mockResource = MockResource(request.method, name)
+    statisticsActor ! IncomingRequest(mockResource)
     val result = (mockActor ? MockRequest(mockResource)).mapTo[MockSpec].map { spec => 
        spec match{
         case MockSpec(c,_,body) if c == 200=> Ok(body)
@@ -84,7 +85,7 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
       errors => Future.successful(BadRequest("Bad request: " + JsError.toJson(errors)))
     }
   }
-  
+      
   def getMock(method: String, name: String) = Action.async { request =>
     (mockActor ? GetMock(MockResource(method,name))).mapTo[Option[MockSpec]].map { 
       case Some(msg) => Ok(Json.toJson(msg)) 
