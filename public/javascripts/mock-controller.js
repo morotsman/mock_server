@@ -40,6 +40,7 @@ require([ 'angular', './mock-dao' ], function() {
 								})
 							}
 							$scope.mockList = result;
+						
 						});
 					})
 				}
@@ -80,6 +81,8 @@ require([ 'angular', './mock-dao' ], function() {
 						addMock();
 					}
 					$scope.mockList.splice(index,1);
+					delete plotData["incoming" + mockToDelete.method + mockToDelete.path];
+					delete plotData["completed" + mockToDelete.method + mockToDelete.path];
 				}
 
 				function getChartOptions () {
@@ -91,19 +94,23 @@ require([ 'angular', './mock-dao' ], function() {
 					}
 				}	
 				
-
+				var plotData = {};
 				
 				function updatePlot(method, path, numberOfRequests, eventType) {
-					var plot = $("#" + eventType + method + path).data("plot")
-					var data = plot.getData()[0].data;
+					
+					var data = getHistoricData(eventType, method, path);
 					if(data.length > 1000) {
 						data.shift();
 					}
 					data.push([data.length, numberOfRequests]);
 					
-					plot.setData([data])
-					plot.setupGrid()
-					plot.draw()
+					var plot = $("#" + eventType + method + path).data("plot");
+					if(plot) {
+						plot.setData([data])
+						plot.setupGrid()
+						plot.draw()
+					}
+					
 				}
 				
 				function updateStatistics(msg) {
@@ -117,19 +124,20 @@ require([ 'angular', './mock-dao' ], function() {
 				}
 				
 				
-				function getHistoricData(eventType, method, path) {
-					var plot = $("#" + eventType + method + path).data("plot");
-					var data = [];
-					if(plot) {
-						data = plot.getData()[0].data
-					}
-					return data;
+				
+				
+				function getHistoricData(eventType, method, path) {	
+					return plotData[eventType + method + path];
 				}
 				
 				function watchStatistics(mock) {
 					websocket.send(JSON.stringify({action:"watch", resource: {method: mock.method, path: mock.path}}));
+					if(!plotData["incoming" + mock.method + mock.path]) {
+						plotData["incoming" + mock.method + mock.path] = [];
+						plotData["completed" + mock.method + mock.path] = [];
+					}
 					var incoming = getHistoricData("incoming", mock.method, mock.path);
-					var completed = getHistoricData("incoming", mock.method, mock.path);
+					var completed = getHistoricData("completed", mock.method, mock.path);
 					
 					var incomingDataset = [
 					               { label: "Incoming requests", data: incoming, points: { symbol: "triangle"} }
