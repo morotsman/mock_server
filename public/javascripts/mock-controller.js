@@ -14,6 +14,7 @@ require([ 'angular', './mock-dao' ], function() {
 
 				$scope.newMock = newMock; 
 				$scope.createMock = createMock;
+				$scope.updateMock = updateMock;
 				$scope.deleteMock = deleteMock;
 				$scope.mockList = [];
 				$scope.showInfo = showInfo;
