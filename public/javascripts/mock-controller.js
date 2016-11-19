@@ -62,6 +62,11 @@ require([ 'angular', './mock-dao' ], function() {
 					$scope.mockUnderConstruction = false;
 				}
 				
+				function updateMock(index) {
+					mockDao.updateMock($scope.mockList[index]).then(listMocks).then(addMock);
+				}
+				
+				
 				function createMock(index) {
 					mockDao.updateMock($scope.mockList[index]).then(listMocks).then(addMock);
 				}
@@ -69,7 +74,10 @@ require([ 'angular', './mock-dao' ], function() {
 				function deleteMock(index) {
 					var mockToDelete = $scope.mockList[index];
 					if(!mockToDelete.create) {
+						unWatchStatistics(mockToDelete);
 						mockDao.deleteMock(mockToDelete).then(listMocks);
+					} else {
+						addMock();
 					}
 					$scope.mockList.splice(index,1);
 				}
@@ -109,13 +117,25 @@ require([ 'angular', './mock-dao' ], function() {
 				}
 				
 				
+				function getHistoricData(eventType, method, path) {
+					var plot = $("#" + eventType + method + path).data("plot");
+					var data = [];
+					if(plot) {
+						data = plot.getData()[0].data
+					}
+					return data;
+				}
+				
 				function watchStatistics(mock) {
 					websocket.send(JSON.stringify({action:"watch", resource: {method: mock.method, path: mock.path}}));
+					var incoming = getHistoricData("incoming", mock.method, mock.path);
+					var completed = getHistoricData("incoming", mock.method, mock.path);
+					
 					var incomingDataset = [
-					               { label: "Outgoing requests", data: [], points: { symbol: "triangle"} }
+					               { label: "Incoming requests", data: incoming, points: { symbol: "triangle"} }
 					           ];
 					var completedDataset = [
-							               { label: "Outgoing requests", data: [], points: { symbol: "triangle"} }
+							               { label: "Completed requests", data: completed, points: { symbol: "triangle"} }
 							           ];
 					var chartOptions = getChartOptions();
 					$('#completed' + mock.method + mock.path).plot(completedDataset, chartOptions).data("plot");
@@ -133,7 +153,6 @@ require([ 'angular', './mock-dao' ], function() {
 						watchStatistics(mock);
 					} else {
 						mock.currentSide = "flippable_front";
-						unWatchStatistics(mock);
 					}
 				}
 				
