@@ -132,9 +132,13 @@
 				<div style="background-color: #fafafa;" class="row mock_container"
 					ng-show="mock.create">
 					<div class="col-md-6">
-						<label for="method">Http Method</label> <input type="text"
-							ng-model="mock.method" class="form-control" id="method"
-							placeholder="Http Method(GET,PUT,POST,DELETE)">
+						<label for="method">Http Method</label>
+						<select class="form-control" name="method" ng-model="mock.method">
+					    	<option value="GET">GET</option>
+					      	<option value="PUT">PUT</option>
+					      	<option value="POST">POST</option>
+					      	<option value="DELETE">DELETE</option>
+					    </select>
 					</div>
 					<div class="col-md-6">
 						<label for="path">Path</label> <input type="text"

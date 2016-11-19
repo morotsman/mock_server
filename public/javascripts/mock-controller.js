@@ -51,7 +51,7 @@ require([ 'angular', './mock-dao' ], function() {
 					$scope.mockUnderConstruction= true;
 					$scope.mockList.push({
 						create: true,
-						method: "",
+						method: "GET",
 						path: "",
 						body: "",
 						responseCode: "",
