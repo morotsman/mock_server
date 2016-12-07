@@ -8,6 +8,7 @@ import com.google.inject.assistedinject.Assisted
 import play.api.Configuration
 import play.api.libs.concurrent.InjectedActorSupport
 import play.api.libs.json._
+import services.StatisticsActor.UnWatchStatistics
 import services.StatisticsActor.WatchStatistics
 import services.StatisticsActor.StatisticsEvent
 
@@ -20,8 +21,12 @@ class UserActor @Inject()(@Assisted out: ActorRef,
 
   override def preStart(): Unit = {
     super.preStart()
-
     statisticsActor ! WatchStatistics
+  }
+  
+  override def postStop(): Unit = {
+    super.preStart()
+    statisticsActor ! UnWatchStatistics
   }
 
   var observedMocks : Set[MockResource]= Set() 

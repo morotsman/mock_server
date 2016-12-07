@@ -160,7 +160,6 @@ class StatisticsController @Inject()(@Named("statisticsActor") statisticsActor: 
       termination.foreach { done =>
         println("Terminating actor")
         logger.info(s"Terminating actor $userActor")
-        statisticsActor.tell(UnWatchStatistics, userActor)
         actorSystem.stop(userActor)
       }
       NotUsed
