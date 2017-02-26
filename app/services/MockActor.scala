@@ -33,14 +33,18 @@ class MockActor extends Actor {
       val timeToWait = mock.responseTimeMillis
       context.system.scheduler.scheduleOnce(timeToWait.millis,sender, mock) 
     case ListMocks =>
+      println("MockActor: ListMocks")
       sender() ! mocks.keys
     case DeleteMock(m) =>
+      println("MockActor: DeleteMock")
       mocks = mocks - m
       sender() ! "OK"
     case AddMock(m,mock) =>
+      println("MockActor: AddMock")
       mocks = mocks + (m -> mock) 
       sender() ! mock  
     case GetMock(m) =>
+      println("MockActor: GetMock")
       sender() ! mocks.get(m)
   }
  

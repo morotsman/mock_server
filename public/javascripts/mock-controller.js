@@ -9,7 +9,7 @@ require([ 'angular', './mock-dao' ], function() {
 
 	controllers.controller('mockCtrl', [ '$scope', 'mockDao','$q',
 			function($scope, mockDao, $q) {
-				var websocket = new WebSocket("ws://localhost:9000/ws");
+				var websocket = new WebSocket(getWsAddress());
 				websocket.onmessage = updateStatistics
 
 				$scope.newMock = newMock; 
@@ -103,7 +103,7 @@ require([ 'angular', './mock-dao' ], function() {
 					if(data.length > 1000) {
 						data.shift();
 					}
-					data.push([data.length, numberOfRequests]);
+					data.push([data.length, numberOfRequests]);//TODO fix bug, should not be length, should be maxIndex
 					
 					var plot = $("#" + eventType + method + path).data("plot");
 					if(plot) {
@@ -163,6 +163,18 @@ require([ 'angular', './mock-dao' ], function() {
 					} else {
 						mock.currentSide = "flippable_front";
 					}
+				}
+				
+				function getWsAddress() {
+					var loc = window.location, new_uri;
+					if (loc.protocol === "https:") {
+					    new_uri = "wss:";
+					} else {
+					    new_uri = "ws:";
+					}
+					new_uri += "//" + loc.host;
+					new_uri += loc.pathname + "ws";
+					return new_uri;
 				}
 				
 				

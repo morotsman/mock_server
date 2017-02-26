@@ -73,10 +73,12 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
   }
 
   def mockResources = Action.async {
+    println("Controller: ListMocks")
     (mockActor ? ListMocks).mapTo[Set[MockResource]].map { msg => Ok(Json.toJson(msg)) }
   }
 
   def createMock(method: String, name: String) = Action.async(BodyParsers.parse.json) { request =>
+    println("Controller: createMock")
     request.body.validate[MockSpec].map { mock => 
       val mockResource = MockResource(method,name)
       statisticsActor ! MockCreated(mockResource)
@@ -87,6 +89,7 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
   }
       
   def getMock(method: String, name: String) = Action.async { request =>
+    println("Controller: getMock")
     (mockActor ? GetMock(MockResource(method,name))).mapTo[Option[MockSpec]].map { 
       case Some(msg) => Ok(Json.toJson(msg)) 
       case None => NotFound
@@ -94,6 +97,7 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
   } 
   
   def deleteMock(method: String, name: String) = Action.async { request =>
+    println("Controller: deleteMock")
     val mockResource = MockResource(method,name)
     statisticsActor ! DeleteMock(mockResource)
     (mockActor ? DeleteMock(mockResource)).map { msg => Ok }
