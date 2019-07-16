@@ -41,7 +41,7 @@
 			<div class="row">
 				<div class="col-md-12 text-center"><h1>Mock service</h1></div>
 			</div>
-			
+
 			<div ng-repeat="mock in mockList">
 				<div ng-show="!mock.create"
 					class="mock_container row flippable {{mock.currentSide}}">
@@ -59,12 +59,17 @@
 						</div>
 
 
-						<div class="col-md-6">
+						<div class="col-md-4">
 							<label for="responseCode">Response code</label> <input
 								type="text" ng-model="mock.responseCode" class="form-control"
 								id="responseCode" placeholder="Response code">
 						</div>
-						<div class="col-md-6">
+						<div class="col-md-4">
+							<label for="contentType">Content Type</label> <input
+								type="text" ng-model="mock.contentType" class="form-control"
+								id="contentType" placeholder="Content type">
+						</div>
+						<div class="col-md-4">
 							<label for="responseTimeInMillis">Response time</label> <input
 								type="text" ng-model="mock.responseTimeMillis"
 								class="form-control" id="responseTimeInMillis"
@@ -145,12 +150,17 @@
 							ng-model=mock.path class="form-control" id="path"
 							placeholder="Path to resource">
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-4">
 						<label for="responseCode">Response code</label> <input type="text"
 							ng-model="mock.responseCode" class="form-control"
 							id="responseCode" placeholder="Response code">
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-4">
+						<label for="contentType">Content Type</label> <input
+							type="text" ng-model="mock.contentType" class="form-control"
+							id="contentType" placeholder="Content type">
+					</div>
+					<div class="col-md-4">
 						<label for="responseTimeInMillis">Response time</label> <input
 							type="text" ng-model="mock.responseTimeMillis"
 							class="form-control" id="responseTimeInMillis"
@@ -184,7 +194,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 
 
 	</div>
