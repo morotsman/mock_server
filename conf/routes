@@ -12,14 +12,14 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /mock-service/*name          controllers.MockController.mock(name)
 PUT     /mock-service/*name          controllers.MockController.mock(name)
 POST    /mock-service/*name          controllers.MockController.mock(name)
-DELETE  /mock-service/*name          controllers.MockController.mock(name)		
+DELETE  /mock-service/*name          controllers.MockController.mock(name)
 
 
 GET		/mock						controllers.MockController.mockResources
-PUT     /mock/:method/*name					controllers.MockController.createMock(method,name)
-GET 	/mock/:method/*name                 controllers.MockController.getMock(method,name) 
-DELETE 	/mock/:method/*name                controllers.MockController.deleteMock(method,name) 
+POST     /mock					controllers.MockController.createMock
+PUT     /mock/:id					controllers.MockController.updateMock(id)
+GET 	/mock/:method/*name                 controllers.MockController.getMock(method,name)
+DELETE 	/mock/:method/*name                controllers.MockController.deleteMock(method,name)
 
 GET     /ws                         controllers.StatisticsController.ws
 
-		  

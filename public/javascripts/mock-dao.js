@@ -22,16 +22,31 @@ define([ 'angular' ], function(angular) {
 			}));
 		}
 
+		function createMock(mock) {
+			var responseCode = parseInt(mock.responseCode,10);
+			var responseTimeMillis = parseInt(mock.responseTimeMillis,10)
+			return $http.post("mock", JSON.stringify(toMock(mock, responseCode, responseTimeMillis)));
+		}
+
+		function toMock(mock, responseCode, responseTimeMillis) {
+			return {
+				mockResource: {
+					method: mock.method,
+					path: mock.path
+				},
+				mockSpec: {
+					body:mock.body,
+					responseCode: responseCode,
+					responseTimeMillis:	responseTimeMillis,
+					contentType: mock.contentType
+				}
+			};
+		}
+
 		function updateMock(mock) {
 			var responseCode = parseInt(mock.responseCode,10);
 			var responseTimeMillis = parseInt(mock.responseTimeMillis,10)
-			var updatedMock = {
-				body:mock.body,
-				responseCode: responseCode,
-				responseTimeMillis:	responseTimeMillis,
-				contentType: mock.contentType
-			};
-			return $http.put("mock/" + mock.method + "/" + mock.path, JSON.stringify(updatedMock));
+			return $http.put("mock/" + mock.id, JSON.stringify(toMock(mock, responseCode, responseTimeMillis)));
 		}
 
 		function deleteMock(mock) {
@@ -42,6 +57,7 @@ define([ 'angular' ], function(angular) {
 			getMocks : getMocks,
 			getMock : getMock,
 			getMockDetails : getMockDetails,
+			createMock:createMock,
 			updateMock:updateMock,
 			deleteMock:deleteMock
 		};

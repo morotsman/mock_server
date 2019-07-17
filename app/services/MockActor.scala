@@ -4,6 +4,7 @@ import akka.actor._
 import scala.concurrent.duration._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import akka.util.Timeout
+import model.Mock
 import model.MockSpec
 import model.MockResource
 
@@ -16,7 +17,8 @@ object MockActor {
   case class ListMocks()
   case class GetMock(resource:MockResource)
   case class DeleteMock(resource:MockResource)
-  case class AddMock(resource:MockResource, mock: MockSpec)
+  case class AddMock(resource: Mock)
+  case class UpdateMock(resource: Mock)
 }
 
 
@@ -26,6 +28,7 @@ class MockActor extends Actor {
 
 
   var mocks : Map[MockResource,MockSpec] = Map()
+  var index = 0
 
   def receive = {
     case MockRequest(m) =>
@@ -39,9 +42,14 @@ class MockActor extends Actor {
       println("MockActor: DeleteMock")
       mocks = mocks - m
       sender() ! "OK"
-    case AddMock(m,mock) =>
+    case AddMock(mock) =>
       println("MockActor: AddMock")
-      mocks = mocks + (m -> mock)
+      mocks = mocks + (mock.mockResource -> mock.mockSpec)
+      index = index + 1
+      sender() ! mock.copy(id = Option(index))
+    case UpdateMock(mock) =>
+      println("MockActor: UpdateMock")
+      mocks = mocks + (mock.mockResource -> mock.mockSpec)
       sender() ! mock
     case GetMock(m) =>
       println("MockActor: GetMock")

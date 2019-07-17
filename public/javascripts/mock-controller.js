@@ -72,7 +72,7 @@ require([ 'angular', './mock-dao' ], function() {
 
 
 				function createMock(index) {
-					mockDao.updateMock($scope.mockList[index]).then(listMocks).then(addMock);
+					mockDao.createMock($scope.mockList[index]).then(listMocks).then(addMock);
 				}
 
 				function deleteMock(index) {

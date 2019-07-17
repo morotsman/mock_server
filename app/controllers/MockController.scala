@@ -15,6 +15,7 @@ import services.StatisticsActor._
 import akka.util.Timeout
 import model.MockSpec
 import model.MockResource
+import model.Mock
 import play.api.libs.json._
 
 @Singleton
@@ -75,12 +76,21 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
     (mockActor ? ListMocks).mapTo[Set[MockResource]].map { msg => Ok(Json.toJson(msg)) }
   }
 
-  def createMock(method: String, name: String) = Action.async(BodyParsers.parse.json) { request =>
-    println("Controller: createMock")
-    request.body.validate[MockSpec].map { mock =>
-      val mockResource = MockResource(method,name)
-      statisticsActor ! MockCreated(mockResource)
-      (mockActor ? AddMock(mockResource,mock)).mapTo[MockSpec].map { msg => Ok(Json.toJson(msg)) }
+  def createMock() = Action.async(BodyParsers.parse.json) { request =>
+    println("Controller, create mock: %s".format(request.body))
+    request.body.validate[Mock].map { mock =>
+      statisticsActor ! MockCreated(mock.mockResource)
+      (mockActor ? AddMock(mock)).mapTo[Mock].map { msg => Ok(Json.toJson(msg)) }
+    }.recoverTotal {
+      errors => Future.successful(BadRequest("Bad request: " + JsError.toJson(errors)))
+    }
+  }
+
+  def updateMock(id: String) = Action.async(BodyParsers.parse.json) { request =>
+    println("Controller, update mock: %s".format(request.body))
+    request.body.validate[Mock].map { mock =>
+      statisticsActor ! MockCreated(mock.mockResource)
+      (mockActor ? UpdateMock(mock)).mapTo[Mock].map { msg => Ok(Json.toJson(msg)) }
     }.recoverTotal {
       errors => Future.successful(BadRequest("Bad request: " + JsError.toJson(errors)))
     }
