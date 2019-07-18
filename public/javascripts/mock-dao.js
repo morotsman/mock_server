@@ -50,7 +50,7 @@ define([ 'angular' ], function(angular) {
 		}
 
 		function deleteMock(mock) {
-			return $http.delete("mock/" + mock.method + "/" + mock.path);
+			return $http.delete("mock/" + mock.id);
 		}
 
 		return {

@@ -15,10 +15,10 @@ object MockActor {
 
   case class MockRequest(resource: MockResource)
   case class ListMocks()
-  case class GetMock(resource:MockResource)
-  case class DeleteMock(resource:MockResource)
+  case class GetMock(id:Int)
+  case class DeleteMock(id: Int)
   case class AddMock(resource: Mock)
-  case class UpdateMock(resource: Mock)
+  case class UpdateMock(id: Int, resource: Mock)
 }
 
 
@@ -27,33 +27,50 @@ class MockActor extends Actor {
   import MockActor._
 
 
-  var mocks : Map[MockResource,MockSpec] = Map()
+  var mocks : Map[MockResource,Mock] = Map()
+
+  var resources : Map[Int,Mock] = Map()
+
   var index = 0
 
   def receive = {
-    case MockRequest(m) =>
-      val mock = mocks.get(m).getOrElse(MockSpec(404, 0, "Could not find a specification for the mock.", "text/plain"))
-      val timeToWait = mock.responseTimeMillis
-      context.system.scheduler.scheduleOnce(timeToWait.millis,sender, mock)
+    case MockRequest(mockResource) =>
+      val mock = mocks.get(mockResource).getOrElse(
+        Mock(Option.empty, mockResource,MockSpec(404, 0, "Could not find a specification for the mock.", "text/plain")))
+      val timeToWait = mock.mockSpec.responseTimeMillis
+      if(timeToWait == 0){
+        sender() ! mock
+      } else {
+        context.system.scheduler.scheduleOnce(timeToWait.millis,sender, mock)
+      }
     case ListMocks =>
-      println("MockActor: ListMocks")
-      sender() ! mocks.keys
-    case DeleteMock(m) =>
-      println("MockActor: DeleteMock")
-      mocks = mocks - m
+      println("ListMocks: " + resources.values)
+      sender() ! resources.values.toList
+    case DeleteMock(id) =>
+      resources = resources - id
+      println("DeleteMock: " + id)
+      updateMocks()
       sender() ! "OK"
     case AddMock(mock) =>
-      println("MockActor: AddMock")
-      mocks = mocks + (mock.mockResource -> mock.mockSpec)
+      val newMock = mock.copy(id = Option(index))
+      resources = resources + (index -> newMock)
       index = index + 1
-      sender() ! mock.copy(id = Option(index))
-    case UpdateMock(mock) =>
-      println("MockActor: UpdateMock")
-      mocks = mocks + (mock.mockResource -> mock.mockSpec)
+      println("AddMock: " + newMock)
+      updateMocks()
+      sender() ! newMock
+    case UpdateMock(id, mock) =>
+      val newMock = mock.copy(id = Option(id))
+      resources = resources + (id -> newMock)
+      println("UpdateMock: " + newMock)
+      updateMocks()
       sender() ! mock
-    case GetMock(m) =>
+    case GetMock(mockResource) =>
       println("MockActor: GetMock")
-      sender() ! mocks.get(m)
+      sender() ! resources.get(mockResource)
+  }
+
+  def updateMocks(): Unit = {
+    mocks = resources.values.map { mock => (mock.mockResource -> mock)}.toMap
   }
 
 }

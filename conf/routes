@@ -17,9 +17,9 @@ DELETE  /mock-service/*name          controllers.MockController.mock(name)
 
 GET		/mock						controllers.MockController.mockResources
 POST     /mock					controllers.MockController.createMock
-PUT     /mock/:id					controllers.MockController.updateMock(id)
-GET 	/mock/:method/*name                 controllers.MockController.getMock(method,name)
-DELETE 	/mock/:method/*name                controllers.MockController.deleteMock(method,name)
+PUT     /mock/:id					controllers.MockController.updateMock(id: Int)
+GET 	/mock/:id                 controllers.MockController.getMock(id: Int)
+DELETE 	/mock/:id                controllers.MockController.deleteMock(id: Int)
 
 GET     /ws                         controllers.StatisticsController.ws
 

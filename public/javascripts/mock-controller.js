@@ -27,23 +27,22 @@ require([ 'angular', './mock-dao' ], function() {
 
 				function listMocks (){
 					mockDao.getMocks().then(function(mocks) {
-						mockDao.getMockDetails(mocks.data).then(function(mockDetails){
-							var result = [];
-							for(var i = 0; i < mocks.data.length; i++) {
-								result.push({
-									create: false,
-									method: mocks.data[i].method,
-									path: mocks.data[i].path,
-									body: mockDetails[i].data.body,
-									responseCode: mockDetails[i].data.responseCode,
-									contentType: mockDetails[i].data.contentType,
-									responseTimeMillis: mockDetails[i].data.responseTimeMillis,
-									currentSide: "flippable_front"
-								})
-							}
-							$scope.mockList = result;
-
-						});
+						var result = [];
+						for(var i = 0; i < mocks.data.length; i++) {
+							var mock = mocks.data[i];
+							result.push({
+								create: false,
+								id: mock.id,
+								method: mock.mockResource.method,
+								path: mock.mockResource.path,
+								body: mock.mockSpec.body,
+								responseCode: mock.mockSpec.responseCode,
+								contentType: mock.mockSpec.contentType,
+								responseTimeMillis: mock.mockSpec.responseTimeMillis,
+								currentSide: "flippable_front"
+							})
+						}
+						$scope.mockList = result;
 					})
 				}
 

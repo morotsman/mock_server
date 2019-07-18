@@ -25,42 +25,42 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
 
   implicit val timeout: Timeout = 240.seconds
 
-  def mock(name: String) = Action.async { request =>
+  def mock(path: String) = Action.async { request =>
     val startTime = System.currentTimeMillis
-    val mockResource = MockResource(request.method, name)
+    val mockResource = MockResource(request.method, path)
     statisticsActor ! IncomingRequest(mockResource)
-    val result = (mockActor ? MockRequest(mockResource)).mapTo[MockSpec].map { spec =>
-       spec match{
-        case MockSpec(c,_,body,contentType) if c == 200=> Ok(body).as(contentType)
-        case MockSpec(c,_,body,contentType) if c == 201=> Created(body).as(contentType)
-        case MockSpec(c,_,body,contentType) if c == 203=> Accepted(body).as(contentType)
-        case MockSpec(c,_,body,contentType) if c == 400=> BadRequest
-        case MockSpec(c,_,body,contentType) if c == 409=> Conflict
-        case MockSpec(c,_,body,contentType) if c == 413=> EntityTooLarge
-        case MockSpec(c,_,body,contentType) if c == 417=> ExpectationFailed
-        case MockSpec(c,_,body,contentType) if c == 403=> Forbidden
-        case MockSpec(c,_,body,contentType) if c == 302=> Found(body).as(contentType)
-        case MockSpec(c,_,body,contentType) if c == 410=> Gone
-        case MockSpec(c,_,body,contentType) if c == 500=> InternalServerError
-        case MockSpec(c,_,body,contentType) if c == 405=> MethodNotAllowed
-        case MockSpec(c,_,body,contentType) if c == 301=> MovedPermanently(body).as(contentType)
-        case MockSpec(c,_,body,contentType) if c == 204=> NoContent
-        case MockSpec(c,_,body,contentType) if c == 203=> NonAuthoritativeInformation
-        case MockSpec(c,_,body,contentType) if c == 406=> NotAcceptable
-        case MockSpec(c,_,body,contentType) if c == 404=> NotFound
-        case MockSpec(c,_,body,contentType) if c == 501=> NotImplemented
-        case MockSpec(c,_,body,contentType) if c == 304=> NotModified
-        case MockSpec(c,_,body,contentType) if c == 206=> PartialContent
-        case MockSpec(c,_,body,contentType) if c == 412=> PreconditionFailed
-        case MockSpec(c,_,body,contentType) if c == 408=> RequestTimeout
-        case MockSpec(c,_,body,contentType) if c == 205=> ResetContent
-        case MockSpec(c,_,body,contentType) if c == 303=> SeeOther(body)
-        case MockSpec(c,_,body,contentType) if c == 503=> ServiceUnavailable
-        case MockSpec(c,_,body,contentType) if c == 307=> TemporaryRedirect(body).as(contentType)
-        case MockSpec(c,_,body,contentType) if c == 429=> TooManyRequests
-        case MockSpec(c,_,body,contentType) if c == 401=> Unauthorized
-        case MockSpec(c,_,body,contentType) if c == 415=> UnsupportedMediaType
-        case MockSpec(c,_,body,contentType) if c == 414=> UriTooLong
+    val result = (mockActor ? MockRequest(mockResource)).mapTo[Mock].map { mock =>
+       mock match{
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 200=> Ok(body).as(contentType)
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 201=> Created(body).as(contentType)
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 203=> Accepted(body).as(contentType)
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 400=> BadRequest
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 409=> Conflict
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 413=> EntityTooLarge
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 417=> ExpectationFailed
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 403=> Forbidden
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 302=> Found(body).as(contentType)
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 410=> Gone
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 500=> InternalServerError
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 405=> MethodNotAllowed
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 301=> MovedPermanently(body).as(contentType)
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 204=> NoContent
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 203=> NonAuthoritativeInformation
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 406=> NotAcceptable
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 404=> NotFound
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 501=> NotImplemented
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 304=> NotModified
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 206=> PartialContent
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 412=> PreconditionFailed
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 408=> RequestTimeout
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 205=> ResetContent
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 303=> SeeOther(body)
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 503=> ServiceUnavailable
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 307=> TemporaryRedirect(body).as(contentType)
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 429=> TooManyRequests
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 401=> Unauthorized
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 415=> UnsupportedMediaType
+        case Mock(_,_, MockSpec(c,_,body,contentType)) if c == 414=> UriTooLong
         case _ => ???
       }
     }
@@ -73,42 +73,39 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
 
   def mockResources = Action.async {
     println("Controller: ListMocks")
-    (mockActor ? ListMocks).mapTo[Set[MockResource]].map { msg => Ok(Json.toJson(msg)) }
+    (mockActor ? ListMocks).mapTo[List[Mock]].map { msg => Ok(Json.toJson(msg)) }
   }
 
   def createMock() = Action.async(BodyParsers.parse.json) { request =>
     println("Controller, create mock: %s".format(request.body))
     request.body.validate[Mock].map { mock =>
-      statisticsActor ! MockCreated(mock.mockResource)
       (mockActor ? AddMock(mock)).mapTo[Mock].map { msg => Ok(Json.toJson(msg)) }
     }.recoverTotal {
       errors => Future.successful(BadRequest("Bad request: " + JsError.toJson(errors)))
     }
   }
 
-  def updateMock(id: String) = Action.async(BodyParsers.parse.json) { request =>
+  def updateMock(id: Int) = Action.async(BodyParsers.parse.json) { request =>
     println("Controller, update mock: %s".format(request.body))
     request.body.validate[Mock].map { mock =>
-      statisticsActor ! MockCreated(mock.mockResource)
-      (mockActor ? UpdateMock(mock)).mapTo[Mock].map { msg => Ok(Json.toJson(msg)) }
+      (mockActor ? UpdateMock(id, mock)).mapTo[Mock].map { msg => Ok(Json.toJson(msg)) }
     }.recoverTotal {
       errors => Future.successful(BadRequest("Bad request: " + JsError.toJson(errors)))
     }
   }
 
-  def getMock(method: String, name: String) = Action.async { request =>
+  def getMock(id: Int) = Action.async { request =>
     println("Controller: getMock")
-    (mockActor ? GetMock(MockResource(method,name))).mapTo[Option[MockSpec]].map {
+    (mockActor ? GetMock(id)).mapTo[Option[Mock]].map {
       case Some(msg) => Ok(Json.toJson(msg))
       case None => NotFound
     }
   }
 
-  def deleteMock(method: String, name: String) = Action.async { request =>
+  def deleteMock(id: Int) = Action.async { request =>
     println("Controller: deleteMock")
-    val mockResource = MockResource(method,name)
-    statisticsActor ! DeleteMock(mockResource)
-    (mockActor ? DeleteMock(mockResource)).map { msg => Ok }
+    statisticsActor ! DeleteMock(id)
+    (mockActor ? DeleteMock(id)).map { msg => Ok }
   }
 
 

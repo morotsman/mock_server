@@ -18,10 +18,6 @@ object StatisticsActor {
   case class AgggregateStatistcs()
   case class WatchStatistics()
   case class UnWatchStatistics()
-
-  case class MockCreated(mockResource: MockResource)
-  case class MockDeleted(mockResource: MockResource)
-
   case class StatisticsEvent(mockResource: MockResource, numberOfRequests: Int, eventType: String)
 }
 
@@ -40,13 +36,16 @@ class StatisticsActor extends Actor {
   def receive = {
     case CompletedRequest(mockResource,timeInMillis) =>
       if(completedRequestsLastSecond.contains(mockResource)){
-        println(timeInMillis)
         completedRequestsLastSecond(mockResource) = completedRequestsLastSecond(mockResource) + 1
+      } else {
+        completedRequestsLastSecond = completedRequestsLastSecond + (mockResource -> 0)
       }
 
     case IncomingRequest(mockResource) =>
       if(receivedRequestsLastSecond.contains(mockResource)){
         receivedRequestsLastSecond(mockResource) = receivedRequestsLastSecond(mockResource) + 1
+      } else {
+        receivedRequestsLastSecond = receivedRequestsLastSecond + (mockResource -> 0)
       }
     case AgggregateStatistcs =>
       context.system.scheduler.scheduleOnce(1000.millis,self, AgggregateStatistcs)
@@ -68,14 +67,6 @@ class StatisticsActor extends Actor {
     case UnWatchStatistics =>
       println("Remove observer!!!")
       observers = observers - sender
-
-    case MockCreated(mockResource) =>
-      completedRequestsLastSecond = completedRequestsLastSecond + (mockResource -> 0)
-      receivedRequestsLastSecond = receivedRequestsLastSecond + (mockResource -> 0)
-
-    case MockDeleted(mockResource) =>
-      completedRequestsLastSecond = completedRequestsLastSecond - mockResource
-      receivedRequestsLastSecond = receivedRequestsLastSecond - mockResource
 
     case test@_ =>
       println("Unknown message (StatisticsActor): " + test);
