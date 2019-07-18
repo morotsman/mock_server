@@ -50,15 +50,19 @@
 
 						<uib-tabset active="active">
 							<uib-tab index="0" heading="Match">
-								<div class="col-md-11">
-									<h3>
-										<span ng-bind="mock.method"></span><span> </span><span
-									ng-bind="mock.path"></span>
-									</h3>
+								<div class="col-md-6">
+									<label for="method">Http Method</label>
+									<select class="form-control" name="method" ng-model="mock.method">
+										<option value="GET">GET</option>
+										<option value="PUT">PUT</option>
+										<option value="POST">POST</option>
+										<option value="DELETE">DELETE</option>
+									</select>
 								</div>
-								<div class="col-md-1">
-									<button type="button" class="btn btn-info"
-									ng-click="showInfo($index)" style="margin-top: 20px">Info</button>
+								<div class="col-md-6">
+									<label for="path">Path</label> <input type="text"
+								ng-model=mock.path class="form-control" id="path"
+								placeholder="Path to resource">
 								</div>
 							</uib-tab>
 							<uib-tab index="1" heading="Mock">
