@@ -1,53 +1,147 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Mock service</title>
-<link rel="shortcut icon" type="image/png"
-	href="@routes.Assets.versioned("images/favicon.png")">
-<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.css")">
-<script data-main="@routes.Assets.versioned("javascripts/main.js")" src="@routes.Assets.versioned("lib/requirejs/require.js")"></script>
-</head>
-<body ng-controller="mockCtrl">
+	<head>
+		<meta charset="utf-8">
+		<title>Mock service</title>
+		<link rel="shortcut icon" type="image/png"
+		href="@routes.Assets.versioned("images/favicon.png")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.css")">
+		<script data-main="@routes.Assets.versioned("javascripts/main.js")" src="@routes.Assets.versioned("lib/requirejs/require.js")"></script>
+	</head>
+	<body ng-controller="mockCtrl">
 
+		<br>
+		<div style="margin-left: 80px;
+			margin-right: 80px" ng-cloak>
 
-
-
-	<br>
-	<div style="margin-left: 80px; margin-right: 80px" ng-cloak>
-
-		<div id="IntroPage" ng-hide="introCompleted">
-			<div style="background-color: #fafafa;" class="row mock_container">
-				<div class="col-md-12 text-center">
-					<h1>Mock service</h1>
-				</div>
-				<div class="col-md-12 text-center">
-					<p>A simple mock service for http requests. Create and
-						configure a mock with just a few clicks and keystrokes...</p>
-				</div>
-				<div style="margin-top: 100px" class="col-md-12 text-center">
-					<p>
-						<button ng-show="mockList.length == 0" class="btn btn-primary btn-lg" ng-click="newMock();introCompleted=true">New mock!</button>
-					</p>
-					<p>
-						<button ng-show="mockList.length > 0" class="btn btn-primary btn-lg" ng-click="introCompleted=true">List mocks</button>
-					</p>
+			<div id="IntroPage" ng-hide="introCompleted">
+				<div style="background-color: #fafafa;" class="row mock_container">
+					<div class="col-md-12 text-center">
+						<h1>Mock service</h1>
+					</div>
+					<div class="col-md-12 text-center">
+						<p>A simple mock service for http requests. Create and
+							configure a mock with just a few clicks and keystrokes...</p>
+					</div>
+					<div style="margin-top: 100px" class="col-md-12 text-center">
+						<p>
+							<button ng-show="mockList.length == 0" class="btn btn-primary btn-lg" ng-click="newMock();introCompleted=true">New mock!</button>
+						</p>
+						<p>
+							<button ng-show="mockList.length > 0" class="btn btn-primary btn-lg" ng-click="introCompleted=true">List mocks</button>
+						</p>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div id="mockPage" ng-show="introCompleted">
-			<div class="row">
-				<div class="col-md-12 text-center"><h1>Mock service</h1></div>
-			</div>
-
-			<div ng-repeat="mock in mockList">
-				<div ng-show="!mock.create"
+			<div id="mockPage" ng-show="introCompleted">
+				<div class="row">
+					<div class="col-md-12 text-center"><h1>Mock service</h1></div>
+				</div>
+				<div ng-repeat="mock in mockList">
+					<div ng-show="!mock.create"
 					class="mock_container row flippable {{mock.currentSide}}">
-					<div style="background-color: #fafafa;"
+						<div style="background-color: #fafafa;"
 						class="flippable_content front">
+							<uib-tabset active="active">
+								<uib-tab index="0" heading="Match">
+									<div class="col-md-6">
+										<label for="method">Http Method</label>
+										<select class="form-control" name="method" ng-model="mock.method">
+											<option value="GET">GET</option>
+											<option value="PUT">PUT</option>
+											<option value="POST">POST</option>
+											<option value="DELETE">DELETE</option>
+										</select>
+									</div>
+									<div class="col-md-6">
+										<label for="path">Path</label>
+										<input type="text"
+										ng-model=mock.path class="form-control" id="path"
+										placeholder="Path to resource">
+									</div>
+									<div class="col-md-12">
+										<label for="expectedBody">Body</label>
+										<textarea rows="5" ng-model="mock.expectedBody" class="form-control"
+										id="expectedBody" placeholder="Body"></textarea>
+									</div>
+								</uib-tab>
+								<uib-tab index="1" heading="Mock">
+									<div class="col-md-4">
+										<label for="responseCode">Response code</label>
+										<input
+										type="text" ng-model="mock.responseCode" class="form-control"
+										id="responseCode" placeholder="Response code">
+									</div>
+									<div class="col-md-4">
+										<label for="contentType">Content Type</label>
+										<input
+										type="text" ng-model="mock.contentType" class="form-control"
+										id="contentType" placeholder="Content type">
+									</div>
+									<div class="col-md-4">
+										<label for="responseTimeInMillis">Response time</label>
+										<input
+										type="text" ng-model="mock.responseTimeMillis"
+										class="form-control" id="responseTimeInMillis"
+										placeholder="Response time in millis">
+									</div>
+									<div class="col-md-12">
+										<label for="body">Body</label>
+										<textarea rows="5" ng-model="mock.body" class="form-control"
+										id="body" placeholder="Body"></textarea>
+									</div>
+								</uib-tab>
+							</uib-tabset>
+							<div style="margin-top: 20px" class="col-md-2">
+								<p>
+									<button class="btn btn-success" ng-click="updateMock($index)">Update
+										mock</button>
+								</p>
+							</div>
+							<div style="margin-top: 20px" class="col-md-9">
+								<p>
+									<button class="btn btn-danger" ng-click="deleteMock($index)">Delete
+										mock</button>
+								</p>
+							</div>
+							<div class="col-md-1">
+								<button type="button" class="btn btn-info pull-right"
+								ng-click="showInfo($index)" style="margin-top: 20px">Info</button>
+							</div>
+						</div>
+						<div style="background-color: #fafafa;"
+						class="flippable_content back">
+							<div class="container">
+								<div class="col-md-6">
+									<h4 class="text-center">Incoming Requests</h4>
+									<div id="statistics" class="big-chart">
+										<div class="chart-holder">
+											<div class="chart"
+											id="{{'incoming' + mock.method + mock.path}}"></div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<h4 class="text-center">Outgoing Requests</h4>
+									<div id="statistics" class="big-chart">
+										<div class="chart-holder">
+											<div class="chart"
+											id="{{'completed' + mock.method + mock.path}}"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<button type="button" class="btn btn-info pull-right"
+								ng-click="showInfo($index)" style="margin-top: 20px">Mock</button>
+							</div>
+						</div>
+					</div>
 
+					<div style="background-color: #fafafa;" class="row mock_container"
+					ng-show="mock.create">
 						<uib-tabset active="active">
 							<uib-tab index="0" heading="Match">
 								<div class="col-md-6">
@@ -60,9 +154,10 @@
 									</select>
 								</div>
 								<div class="col-md-6">
-									<label for="path">Path</label> <input type="text"
-								ng-model=mock.path class="form-control" id="path"
-								placeholder="Path to resource">
+									<label for="path">Path</label>
+									<input type="text"
+									ng-model=mock.path class="form-control" id="path"
+									placeholder="Path to resource">
 								</div>
 								<div class="col-md-12">
 									<label for="expectedBody">Body</label>
@@ -72,157 +167,56 @@
 							</uib-tab>
 							<uib-tab index="1" heading="Mock">
 								<div class="col-md-4">
-									<label for="responseCode">Response code</label> <input
-								type="text" ng-model="mock.responseCode" class="form-control"
-								id="responseCode" placeholder="Response code">
+									<label for="responseCode">Response code</label>
+									<input type="text"
+									ng-model="mock.responseCode" class="form-control"
+									id="responseCode" placeholder="Response code">
 								</div>
 								<div class="col-md-4">
-									<label for="contentType">Content Type</label> <input
-								type="text" ng-model="mock.contentType" class="form-control"
-								id="contentType" placeholder="Content type">
+									<label for="contentType">Content Type</label>
+									<input
+									type="text" ng-model="mock.contentType" class="form-control"
+									id="contentType" placeholder="Content type">
 								</div>
 								<div class="col-md-4">
-									<label for="responseTimeInMillis">Response time</label> <input
-								type="text" ng-model="mock.responseTimeMillis"
-								class="form-control" id="responseTimeInMillis"
-								placeholder="Response time in millis">
+									<label for="responseTimeInMillis">Response time</label>
+									<input
+									type="text" ng-model="mock.responseTimeMillis"
+									class="form-control" id="responseTimeInMillis"
+									placeholder="Response time in millis">
 								</div>
 								<div class="col-md-12">
 									<label for="body">Body</label>
 									<textarea rows="5" ng-model="mock.body" class="form-control"
 									id="body" placeholder="Body"></textarea>
 								</div>
-								<div style="margin-top: 20px" class="col-md-2">
-									<p>
-										<button class="btn btn-success" ng-click="updateMock($index)">Update
-											mock</button>
-									</p>
-								</div>
-								<div style="margin-top: 20px" class="col-md-2">
-									<p>
-										<button class="btn btn-danger" ng-click="deleteMock($index)">Delete
-											mock</button>
-									</p>
-								</div>
+
 							</uib-tab>
 						</uib-tabset>
-
-
-
-
-					</div>
-					<div style="background-color: #fafafa;"
-						class="flippable_content back">
-						<div class="col-md-11">
-							<h3>
-								<span ng-bind="mock.method"></span><span> </span><span
-									ng-bind="mock.path"></span>
-							</h3>
+						<div style="margin-top: 20px" class="col-md-2">
+							<p>
+								<button class="btn btn-success" ng-click="createMock($index)">Create
+									mock</button>
+							</p>
 						</div>
-						<div class="col-md-1">
-							<button type="button" class="btn btn-info"
-								ng-click="showInfo($index)" style="margin-top: 20px">Mock</button>
-						</div>
-						<div class="container">
-							<div class="col-md-6">
-								<h4 class="text-center">Incoming Requests</h4>
-								<div id="statistics" class="big-chart">
-									<div class="chart-holder">
-										<div class="chart"
-											id="{{'incoming' + mock.method + mock.path}}"></div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<h4 class="text-center">Outgoing Requests</h4>
-								<div id="statistics" class="big-chart">
-									<div class="chart-holder">
-										<div class="chart"
-											id="{{'completed' + mock.method + mock.path}}"></div>
-									</div>
-								</div>
-							</div>
+						<div style="margin-top: 20px" class="col-md-2">
+							<p>
+								<button class="btn btn-danger" ng-click="deleteMock($index)">Delete
+									mock</button>
+							</p>
 						</div>
 					</div>
 				</div>
+				<div style="background-color: #fafafa;" class="row mock_container" ng-show="!mockUnderConstruction">
+					<div style="margin-top: 100px" class="col-md-12 text-center">
+						<p>
+							<button class="btn btn-primary btn-lg" ng-click="newMock()">New mock!</button>
+						</p>
+					</div>
+				</div>
+			</div>
 
-				<div style="background-color: #fafafa;" class="row mock_container"
-					ng-show="mock.create">
-					<uib-tabset active="active">
-						<uib-tab index="0" heading="Match">
-							<div class="col-md-6">
-								<label for="method">Http Method</label>
-								<select class="form-control" name="method" ng-model="mock.method">
-									<option value="GET">GET</option>
-									<option value="PUT">PUT</option>
-									<option value="POST">POST</option>
-									<option value="DELETE">DELETE</option>
-								</select>
-							</div>
-							<div class="col-md-6">
-								<label for="path">Path</label> <input type="text"
-							ng-model=mock.path class="form-control" id="path"
-							placeholder="Path to resource">
-							</div>
-							<div class="col-md-12">
-								<label for="expectedBody">Body</label>
-								<textarea rows="5" ng-model="mock.expectedBody" class="form-control"
-								id="expectedBody" placeholder="Body"></textarea>
-							</div>
-						</uib-tab>
-						<uib-tab index="1" heading="Mock">
-							<div class="col-md-4">
-								<label for="responseCode">Response code</label> <input type="text"
-							ng-model="mock.responseCode" class="form-control"
-							id="responseCode" placeholder="Response code">
-							</div>
-							<div class="col-md-4">
-								<label for="contentType">Content Type</label> <input
-							type="text" ng-model="mock.contentType" class="form-control"
-							id="contentType" placeholder="Content type">
-							</div>
-							<div class="col-md-4">
-								<label for="responseTimeInMillis">Response time</label> <input
-							type="text" ng-model="mock.responseTimeMillis"
-							class="form-control" id="responseTimeInMillis"
-							placeholder="Response time in millis">
-							</div>
-							<div class="col-md-12">
-								<label for="body">Body</label>
-								<textarea rows="5" ng-model="mock.body" class="form-control"
-								id="body" placeholder="Body"></textarea>
-							</div>
-							<div style="margin-top: 20px" class="col-md-2">
-								<p>
-									<button class="btn btn-success" ng-click="createMock($index)">Create
-										mock</button>
-								</p>
-							</div>
-							<div style="margin-top: 20px" class="col-md-2">
-								<p>
-									<button class="btn btn-danger" ng-click="deleteMock($index)">Delete
-										mock</button>
-								</p>
-							</div>
-						</uib-tab>
-					</uib-tabset>
-				</div>
-			</div>
-			<div style="background-color: #fafafa;" class="row mock_container" ng-show="!mockUnderConstruction">
-				<div style="margin-top: 100px" class="col-md-12 text-center">
-					<p>
-						<button class="btn btn-primary btn-lg" ng-click="newMock()">New mock!</button>
-					</p>
-				</div>
-			</div>
 		</div>
 
-
-
-	</div>
-
-
-
-
-</body>
+	</body>
 </html>

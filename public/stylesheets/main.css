@@ -1,5 +1,5 @@
 .mock_container {
-	height:330px;
+	height:350px;
 	border:1px solid;
 	border-color:#ddd;
 	border-radius: 4px 4px 0 0;
@@ -7,11 +7,11 @@
 }
 
 .flippable {
-	
+
   position: relative;
   z-index: 1;
   transform-style: preserve-3d;
-  -webkit-transform-style:preserve-3d; 
+  -webkit-transform-style:preserve-3d;
   transition: all 0.5s linear;
   -webkit-transition: all 0.5s linear;
 }
@@ -29,8 +29,8 @@
 .flippable_content {
   width: 100%;
   height: 100%;
-  
-  
+
+
 }
 
 .flippable_back > .flippable_content.front {
@@ -43,10 +43,10 @@
 
 
 .flippable_content.front {
-	
+
 }
 
-.flippable_content.back { 
+.flippable_content.back {
   transform: rotateY(180deg);
   -webkit-transform:rotateY(180deg);
 }
