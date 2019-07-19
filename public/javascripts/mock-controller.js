@@ -35,6 +35,7 @@ require([ 'angular', './mock-dao' ], function() {
 								id: mock.id,
 								method: mock.mockResource.method,
 								path: mock.mockResource.path,
+								expectedBody: mock.mockResource.body,
 								body: mock.mockSpec.body,
 								responseCode: mock.mockSpec.responseCode,
 								contentType: mock.mockSpec.contentType,

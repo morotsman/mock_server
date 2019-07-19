@@ -35,6 +35,7 @@ class MockActor extends Actor {
 
   def receive = {
     case MockRequest(mockResource) =>
+      println(mockResource)
       val mock = mocks.get(mockResource).getOrElse(
         Mock(Option.empty, mockResource,MockSpec(404, 0, "Could not find a specification for the mock.", "text/plain")))
       val timeToWait = mock.mockSpec.responseTimeMillis

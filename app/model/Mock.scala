@@ -10,7 +10,7 @@ object Mock {
     def writes(mock: Mock) = Json.obj(
       "id" -> mock.id,
       "mockResource" -> mock.mockResource,
-      "mockSpec" -> mock.mockSpec);
+      "mockSpec" -> mock.mockSpec)
 
   }
 

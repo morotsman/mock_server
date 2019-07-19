@@ -64,6 +64,11 @@
 								ng-model=mock.path class="form-control" id="path"
 								placeholder="Path to resource">
 								</div>
+								<div class="col-md-12">
+									<label for="expectedBody">Body</label>
+									<textarea rows="5" ng-model="mock.expectedBody" class="form-control"
+									id="expectedBody" placeholder="Body"></textarea>
+								</div>
 							</uib-tab>
 							<uib-tab index="1" heading="Mock">
 								<div class="col-md-4">
@@ -158,6 +163,11 @@
 								<label for="path">Path</label> <input type="text"
 							ng-model=mock.path class="form-control" id="path"
 							placeholder="Path to resource">
+							</div>
+							<div class="col-md-12">
+								<label for="expectedBody">Body</label>
+								<textarea rows="5" ng-model="mock.expectedBody" class="form-control"
+								id="expectedBody" placeholder="Body"></textarea>
 							</div>
 						</uib-tab>
 						<uib-tab index="1" heading="Mock">

@@ -27,7 +27,7 @@ class MockController @Inject() (@Named("statisticsActor") statisticsActor: Actor
 
   def mock(path: String) = Action.async { request =>
     val startTime = System.currentTimeMillis
-    val mockResource = MockResource(request.method, path)
+    val mockResource = MockResource(request.method, path, request.body.asText)
     statisticsActor ! IncomingRequest(mockResource)
     val result = (mockActor ? MockRequest(mockResource)).mapTo[Mock].map { mock =>
        mock match{

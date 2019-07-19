@@ -32,7 +32,8 @@ define([ 'angular' ], function(angular) {
 			return {
 				mockResource: {
 					method: mock.method,
-					path: mock.path
+					path: mock.path,
+					body: mock.expectedBody
 				},
 				mockSpec: {
 					body:mock.body,

@@ -12,7 +12,7 @@ object MockSpec {
       "responseCode" -> mock.responseCode,
       "responseTimeMillis" -> mock.responseTimeMillis,
       "body" -> mock.body,
-      "contentType" -> mock.contentType);
+      "contentType" -> mock.contentType)
 
   }
 
