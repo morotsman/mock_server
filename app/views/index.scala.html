@@ -46,7 +46,7 @@
 						class="flippable_content front">
 							<uib-tabset active="active">
 								<uib-tab index="0" heading="Match">
-									<div class="col-md-6">
+									<div class="col-md-4">
 										<label for="method">Http Method</label>
 										<select class="form-control" name="method" ng-model="mock.method">
 											<option value="GET">GET</option>
@@ -55,11 +55,19 @@
 											<option value="DELETE">DELETE</option>
 										</select>
 									</div>
-									<div class="col-md-6">
+									<div class="col-md-4">
 										<label for="path">Path</label>
 										<input type="text"
 										ng-model=mock.path class="form-control" id="path"
 										placeholder="Path to resource">
+									</div>
+									<div class="col-md-4">
+										<label for="type">Match body</label>
+										<select class="form-control" name="type" ng-model="mock.type">
+											<option value="ignore">Ignore</option>
+											<option value="exact">Exact match</option>
+											<option value="regexp">Regexp</option>
+										</select>
 									</div>
 									<div class="col-md-12">
 										<label for="expectedBody">Body</label>
@@ -144,7 +152,7 @@
 					ng-show="mock.create">
 						<uib-tabset active="active">
 							<uib-tab index="0" heading="Match">
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<label for="method">Http Method</label>
 									<select class="form-control" name="method" ng-model="mock.method">
 										<option value="GET">GET</option>
@@ -153,11 +161,19 @@
 										<option value="DELETE">DELETE</option>
 									</select>
 								</div>
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<label for="path">Path</label>
 									<input type="text"
 									ng-model=mock.path class="form-control" id="path"
 									placeholder="Path to resource">
+								</div>
+								<div class="col-md-4">
+									<label for="type">Match body</label>
+									<select class="form-control" name="type" ng-model="mock.type">
+										<option value="ignore">Ignore</option>
+										<option value="exact">Exact match</option>
+										<option value="regexp">Regexp</option>
+									</select>
 								</div>
 								<div class="col-md-12">
 									<label for="expectedBody">Body</label>

@@ -29,10 +29,13 @@ define([ 'angular' ], function(angular) {
 		}
 
 		function toMock(mock, responseCode, responseTimeMillis) {
-			return {
-				mockResource: {
-					method: mock.method,
-					path: mock.path,
+			var result =  {
+				matchType: mock.type,
+				matcher: {
+					resource: {
+						method: mock.method,
+						path: mock.path,
+					},
 					body: mock.expectedBody
 				},
 				mockSpec: {
@@ -42,6 +45,10 @@ define([ 'angular' ], function(angular) {
 					contentType: mock.contentType
 				}
 			};
+			if (mock.expectedBody !== "") {
+				result.matcher.resource.body = mock.expectedBody;
+			}
+			return result;
 		}
 
 		function updateMock(mock) {

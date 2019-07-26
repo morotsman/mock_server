@@ -23,13 +23,13 @@ class UserActor @Inject()(@Assisted out: ActorRef,
     super.preStart()
     statisticsActor ! WatchStatistics
   }
-  
+
   override def postStop(): Unit = {
     super.preStart()
     statisticsActor ! UnWatchStatistics
   }
 
-  var observedMocks : Set[MockResource]= Set() 
+  var observedMocks : Set[MockResource]= Set()
 
 
   override def receive: Receive = LoggingReceive {
@@ -41,14 +41,14 @@ class UserActor @Inject()(@Assisted out: ActorRef,
         observedMocks = observedMocks + resource
       } else if(action == "unWatch"){
         observedMocks = observedMocks - resource
-      }      
+      }
     case StatisticsEvent(resource,numberOfRequests, eventType) =>
       if(observedMocks.contains(resource)) {
          val statisticsEvent = Json.obj("type" -> "statisticsEvent", "resource" -> resource, "numberOfRequestsPerSecond" -> numberOfRequests, "eventType" -> eventType)
          out ! statisticsEvent
       }
-     
-    case unknown@_ => 
+
+    case unknown@_ =>
       println("Unknown message received by UserActor: " + unknown)
   }
 }
