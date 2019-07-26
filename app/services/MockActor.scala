@@ -4,11 +4,7 @@ import akka.actor._
 
 import scala.concurrent.duration._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import akka.util.Timeout
 import model.{Matcher, Mock, MockResource, MockSpec}
-import play.libs.F.Tuple
-
-
 
 object MockActor {
   def props = Props[MockActor]
@@ -28,17 +24,26 @@ class MockActor extends Actor {
 
   var ignoreBodyMatches : Map[MockResource, MockSpec] = Map()
   var exactBodyMatches : Map[Matcher,MockSpec] = Map()
-  var regExpBodyMatches: Map[MockResource, MockSpec] = Map()
+  var regExpBodyMatches: Map[MockResource, Mock] = Map()
 
   var resources : Map[Int,Mock] = Map()
 
   var index = 0
 
+  def matchesRegExp(body: Option[String], regExp: Option[String]): Boolean = {
+    println(body)
+    println(regExp)
+    val result = body.flatMap(b => regExp.map(e => b.matches(e))).getOrElse(false)
+    println(result)
+    result
+  }
+
+
   def receive: PartialFunction[Any,Unit] = {
     case matcher @ Matcher(mockResource, responeBody) =>
       println("Received call to resource:  " + mockResource + "with response body: " + responeBody)
       val mockSpec: Option[MockSpec] = exactBodyMatches.get(matcher)
-        .orElse(regExpBodyMatches.get(matcher.resource))
+        .orElse(regExpBodyMatches.get(matcher.resource).filter(mock => matchesRegExp(responeBody, mock.matcher.body)).map(_.mockSpec))
         .orElse(ignoreBodyMatches.get(matcher.resource))
         .orElse(Option(MockSpec(404, 0, "Could not find a specification for the mock.", "text/plain")))
 
@@ -84,7 +89,7 @@ class MockActor extends Actor {
 
     regExpBodyMatches = resources.values
       .filter{ mock => mock.matchType.contains("regexp")}
-      .map { mock => mock.matcher.resource -> mock.mockSpec}
+      .map { mock => mock.matcher.resource -> mock}
       .toMap
 
     ignoreBodyMatches = resources.values

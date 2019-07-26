@@ -3,15 +3,12 @@ package controllers
 import akka.actor.ActorSystem
 import akka.actor.ActorRef
 import javax.inject._
-import play.api._
 import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.concurrent.duration._
 import akka.pattern.ask
-import services.MockActor
 import services.MockActor._
-import services.StatisticsActor
 import services.StatisticsActor._
 import akka.util.Timeout
 import model.{Matcher, Mock, MockResource, MockSpec}
@@ -104,7 +101,7 @@ class MockController @Inject()(@Named("statisticsActor") statisticsActor: ActorR
     }
   }
 
-  def deleteMock(id: Int) = Action.async { request =>
+  def deleteMock(id: Int): Action[AnyContent] = Action.async { request =>
     println("Controller: deleteMock")
     statisticsActor ! DeleteMock(id)
     (mockActor ? DeleteMock(id)).map { msg => Ok }
