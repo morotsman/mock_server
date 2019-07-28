@@ -22,28 +22,25 @@ object MockActor {
 class MockActor extends Actor {
   import MockActor._
 
-  var ignoreBodyMatches : Map[MockResource, MockSpec] = Map()
   var exactBodyMatches : Map[Matcher,MockSpec] = Map()
-  var regExpBodyMatches: Map[MockResource, Mock] = Map()
+  var regExpBodyMatches: Map[MockResource, List[Mock]] = Map()
+  var ignoreBodyMatches : Map[MockResource, MockSpec] = Map()
 
   var resources : Map[Int,Mock] = Map()
 
   var index = 0
 
-  def matchesRegExp(body: Option[String], regExp: Option[String]): Boolean = {
-    println(body)
-    println(regExp)
-    val result = body.flatMap(b => regExp.map(e => b.matches(e))).getOrElse(false)
-    println(result)
-    result
-  }
+  def matchesRegExp(body: Option[String], regExp: Option[String]): Boolean =
+    body.flatMap(b => regExp.map(e => b.matches(e))).getOrElse(false)
 
+  def matchFirstRegExp(availableMocks: Option[List[Mock]], responseBody: Option[String]): Option[MockSpec] =
+    availableMocks.flatMap(mocks => mocks.find(mock => matchesRegExp(responseBody, mock.matcher.body)).map(_.mockSpec))
 
   def receive: PartialFunction[Any,Unit] = {
     case matcher @ Matcher(mockResource, responeBody) =>
       println("Received call to resource:  " + mockResource + "with response body: " + responeBody)
       val mockSpec: Option[MockSpec] = exactBodyMatches.get(matcher)
-        .orElse(regExpBodyMatches.get(matcher.resource).filter(mock => matchesRegExp(responeBody, mock.matcher.body)).map(_.mockSpec))
+        .orElse(matchFirstRegExp(regExpBodyMatches.get(matcher.resource), responeBody))
         .orElse(ignoreBodyMatches.get(matcher.resource))
         .orElse(Option(MockSpec(404, 0, "Could not find a specification for the mock.", "text/plain")))
 
@@ -87,10 +84,10 @@ class MockActor extends Actor {
       .map { mock => mock.matcher -> mock.mockSpec}
       .toMap
 
-    regExpBodyMatches = resources.values
+    regExpBodyMatches  =  resources.values
       .filter{ mock => mock.matchType.contains("regexp")}
-      .map { mock => mock.matcher.resource -> mock}
-      .toMap
+      .groupBy(mock => mock.matcher.resource)
+      .map { t => t._1 -> t._2.toList}
 
     ignoreBodyMatches = resources.values
       .filter{ mock => mock.matchType.contains("ignore")}
