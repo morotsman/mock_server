@@ -3,7 +3,7 @@
 A simple mock server that accets http requests. 
 
 Start by:
-1) Start activator
+1) sbt
 2) run
 3) application available at http://localhost:9000
 4) Create a mock with name <name>
