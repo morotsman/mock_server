@@ -4,6 +4,8 @@
 
 require([ 'angular', './mock-dao' ], function() {
 
+  const numberOfPlotPoints = 1000
+
 	var controllers = angular.module('myApp.mock-controller',
 			[ 'myApp.mock-dao' ]);
 
@@ -104,15 +106,15 @@ require([ 'angular', './mock-dao' ], function() {
 				function updatePlot(method, path, numberOfRequests, eventType) {
 
 					var data = getHistoricData(eventType, method, path);
-					if(data.length > 1000) {
-						data.shift();
-					}
-					data.push([data.length, numberOfRequests]);//TODO fix bug, should not be length, should be maxIndex
+          const last = data[numberOfPlotPoints - 1];
+          const lastIndex =  last[0];
+          data.shift();
+					data.push([lastIndex + 1, numberOfRequests]);
 
 					var plot = $("#" + eventType + method + path).data("plot");
 					if(plot) {
-						plot.setData([data])
-						plot.setupGrid()
+						plot.setData([data]);
+						plot.setupGrid();
 						plot.draw()
 					}
 
@@ -122,7 +124,7 @@ require([ 'angular', './mock-dao' ], function() {
 					var data = JSON.parse(msg.data);
 					var method = data.resource.method;
 					var path = data.resource.path;
-					var eventType = data.eventType
+					var eventType = data.eventType;
 					var numberOfRequests = data.numberOfRequestsPerSecond;
 
 					updatePlot(method, path, numberOfRequests,eventType);
@@ -135,11 +137,19 @@ require([ 'angular', './mock-dao' ], function() {
 					return plotData[eventType + method + path];
 				}
 
+				function createEmptyArray(length) {
+				  var result = new Array(length);
+          for (var i = 0; i < length; i++) {
+            result[i] = [i, 0]
+          }
+          return result;
+        }
+
 				function watchStatistics(mock) {
 					websocket.send(JSON.stringify({action:"watch", resource: {method: mock.method, path: mock.path}}));
 					if(!plotData["incoming" + mock.method + mock.path]) {
-						plotData["incoming" + mock.method + mock.path] = [];
-						plotData["completed" + mock.method + mock.path] = [];
+						plotData["incoming" + mock.method + mock.path] = createEmptyArray(numberOfPlotPoints);
+						plotData["completed" + mock.method + mock.path] = createEmptyArray(numberOfPlotPoints);
 					}
 					var incoming = getHistoricData("incoming", mock.method, mock.path);
 					var completed = getHistoricData("completed", mock.method, mock.path);
